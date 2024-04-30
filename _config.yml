@@ -8,9 +8,9 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Your Name / Site Title"
+title                    : "Hieu Duong"
 title_separator          : "-"
-name                     : &name "Your Name"
+name                     : &name "Hieu Duong"
 description              : &description "personal description"
 url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
@@ -21,42 +21,39 @@ repository               : "academicpages/academicpages.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
-  name             : "Your Sidebar Name"
-  pronouns         : # example: "she/her"  
-  bio              : "Short biography for the left-hand sidebar"
-  location         : "Earth"
-  employer         : "Red Brick University"
+  avatar           : "hieudx_profile.jpg"
+  name             : "Hieu Duong"
+  pronouns         : "Dương Xuân Hiếu (Vietnamese)"
+  bio              : "AI Engineer, NLP Researcher"
+  location         : "Hanoi, Vietnam"
+  employer         : "FPT Smart Cloud"
   uri              : # URL
-  email            : "none@example.org" 
+  email            : "duongxuanhieu1999@gmail.com" 
 
   # Academic websites
   arxiv            : # URL - Update with the correct link to your profile
-  googlescholar    : "https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
-  impactstory      : # URL
-  orcid            : "http://orcid.org/yourorcidurl"
-  pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
+  googlescholar    : https://scholar.google.fr/citations?user=ELdtVWsAAAAJ&hl=vi"
   researchgate     : # URL
 
   # Repositories and software development
   bitbucket        : # Username - Update with your username on the site
   codepen          : # Username
   dribbble         : # Username
-  github           : "academicpages"
+  github           : "hieudx149"
   kaggle           : # Username  
   stackoverflow    : # User number or user number and name (i.e., use "1" or "1/jeff-atwood")    
 
   # Social media
-  bluesky          : "bsky.app" # Replace this with you Bluesky username
-  facebook         : # Username
+  bluesky          : # 
+  facebook         : xhd99
   flickr           : # Username
   foursquare       : # Username
-  goodreads        : # Username
+  goodreads        : user/show/114932757-xu-n-hi-u
   google_plus      : # Username
   keybase          : # Username
   instagram        : # Username
   lastfm           : # Username
-  linkedin         : # Username
+  linkedin         : hieu-duong-b55018165
   mastodon         : # URL
   medium           : # URL
   pinterest        : # Username
