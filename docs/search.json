@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "vi_posts.html",
+    "href": "vi_posts.html",
+    "title": "Recent Posts",
+    "section": "",
+    "text": "Comming soon :D"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "About",
+    "section": "",
+    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current role involves developing products using Generative AI, including chatbot systems, and recommendation systems,… In addition to my work, I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models.\n\n\nBachelor of Science in Engineering, Posts and Telecommunications Institute of Technology, Hanoi, Vietnam (PTIT), 2017 – 2022.\n\nMajor: Information Techonology\nSupervisor: Dr. Ngo Xuan Bach, Associate Professor, Vice Dean of Faculty of Information Technology, Posts and Telecommunications Institute of Technology (PTIT), Hanoi, Vietnam. (Personal Home-page)\nAwards and Prizes:\n\n1st prize in calculus math at MATH OLYMPIAD FOR STUDENTS, 2018 organized by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations.\n1st prize at ACM ICPC – PTIT, 2020 organized by PTIT.\nSamsung Algorithm Certificate, sponsored and trained by Samsung & PTIT.\n\n\n\n\n\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023 paper\n\n\n\n\n05/2023 - Present: AI Engineer at FPT Smart Cloud\n10/2021 - 05/2023: AI Engineer at Innovation Center - VNPT-AI\n\n\n\n\n\n\n\nCourse\n\n\n\n\n\nMachine Learning Specialization\nby Deeplearning.AI & Standford\n\n\nDeep Learning Specialization\nby Deeplearning.AI\n\n\nGoogle Data Analytics Professional\nby Google\n\n\n\n\n \n  \n   \n  \n    \n     Github\n  \n  \n    \n     LinkedIn\n  \n  \n    \n     Faccebook"
+  },
+  {
+    "objectID": "index.html#education",
+    "href": "index.html#education",
+    "title": "About",
+    "section": "",
+    "text": "Bachelor of Science in Engineering, Posts and Telecommunications Institute of Technology, Hanoi, Vietnam (PTIT), 2017 – 2022.\n\nMajor: Information Techonology\nSupervisor: Dr. Ngo Xuan Bach, Associate Professor, Vice Dean of Faculty of Information Technology, Posts and Telecommunications Institute of Technology (PTIT), Hanoi, Vietnam. (Personal Home-page)\nAwards and Prizes:\n\n1st prize in calculus math at MATH OLYMPIAD FOR STUDENTS, 2018 organized by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations.\n1st prize at ACM ICPC – PTIT, 2020 organized by PTIT.\nSamsung Algorithm Certificate, sponsored and trained by Samsung & PTIT."
+  },
+  {
+    "objectID": "index.html#publications",
+    "href": "index.html#publications",
+    "title": "About",
+    "section": "",
+    "text": "Nguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023 paper"
+  },
+  {
+    "objectID": "index.html#experience",
+    "href": "index.html#experience",
+    "title": "About",
+    "section": "",
+    "text": "05/2023 - Present: AI Engineer at FPT Smart Cloud\n10/2021 - 05/2023: AI Engineer at Innovation Center - VNPT-AI"
+  },
+  {
+    "objectID": "index.html#certificates",
+    "href": "index.html#certificates",
+    "title": "About",
+    "section": "",
+    "text": "Course\n\n\n\n\n\nMachine Learning Specialization\nby Deeplearning.AI & Standford\n\n\nDeep Learning Specialization\nby Deeplearning.AI\n\n\nGoogle Data Analytics Professional\nby Google"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Recent Posts",
+    "section": "",
+    "text": "Comming soon :D"
+  }
+]
