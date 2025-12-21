@@ -1,0 +1,49 @@
+---
+title: "Hieu Duong"
+image: profile.jpg
+about:
+  id: portfolio
+  template: jolla
+
+---
+
+:::{#portfolio}
+
+## Experience
+- 05/2023 - Present: AI Engineer at [FPT Smart Cloud](https://fptsmartcloud.com/en/home/)
+  - Developed Large Language Models (LLMs) and core engines for AI Agents for real-world applications, such as chatbot systems and recommendation systems.
+- 10/2021 - 05/2023: AI Engineer at [Innovation Center - VNPT-AI](https://icenter.ai/en)
+  - Developed information retrieval models for Vietnamese chatbot systems.
+  - Researched intent classification and slot filling for Vietnamese chatbot systems.
+
+## Education
+Bachelor of Science in Engineering, [Posts and Telecommunications Institute of Technology, Hanoi, Vietnam (PTIT)](https://english.ptit.edu.vn/), 2017 – 2022.
+
+* Major: Information Techonology
+* Supervisor: **Dr. Ngo Xuan Bach, Associate Professor**, Vice Dean of Faculty of
+Information Technology, Posts and Telecommunications Institute of Technology
+(PTIT), Hanoi, Vietnam. ([Personal Home-page](https://sites.google.com/site/nxbachcs/home?authuser=0))
+* Awards and Prizes:
+  - **1st prize** in calculus math at **MATH OLYMPIAD FOR STUDENTS**, 2018
+organized by [Vietnam Mathematical Society](https://www.vms.org.vn/), [Vietnam Unions Of Science
+And Technology Associations](https://en.vusta.vn/).
+  - **1st prize** at **ACM ICPC – PTIT**, 2020 organized by PTIT.
+  - Samsung Algorithm Certificate, sponsored and trained by Samsung & PTIT.
+
+## Awards and Prizes
+- 🥉 **10/2025: 3rd prize** in Vietnamese Legal Document Retrieval Competition at VLSP 2025
+  - Our solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.
+- 🥈 **08/2025: 2nd prize** in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)
+  - Built an AI Agent System for document analysis and reporting.
+- 🥇 **08/2024: Champion** in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)
+  - Built a Hybrid Labeling Platform powered by LLMs.
+- 🥈 **2023: 2nd prize** in VNPT.AI Hackathon 2023
+- 🥇 **2020: 1st prize** in ACM ICPC – PTIT 2020
+- 🥇 **2018: 1st prize** in MATH OLYMPIAD FOR STUDENTS 2018
+
+## Publications
+**Xuan-Hieu Duong**, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. [paper](https://aclanthology.org/2025.vlsp-1.20.pdf)
+
+Nguyen Anh Tu, **Duong Xuan Hieu**, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023 [paper](https://ieeexplore.ieee.org/abstract/document/10096195)
+
+:::
