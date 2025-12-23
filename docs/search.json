@@ -1,5 +1,40 @@
 [
   {
+    "objectID": "portfolio.html",
+    "href": "portfolio.html",
+    "title": "Hieu Duong",
+    "section": "",
+    "text": "05/2023 – Present: AI Engineer, FPT Smart Cloud\n\nDeveloped Large Language Models (LLMs) and core engines for AI Agents in real-world applications (chatbot systems and recommendation systems).\n\n10/2021 – 05/2023: AI Engineer, Innovation Center - VNPT-AI\n\nDeveloped information retrieval models for Vietnamese chatbots.\nConducted research on intent classification and slot filling for Vietnamese chatbots.\n\n\n\n\n\n\n2017 – 2022: B.Sc. in Engineering, Posts and Telecommunications Institute of Technology (PTIT) — Hanoi, Vietnam\n\nMajor: Information Technology\nSupervisor: Dr. Ngo Xuan Bach (Associate Professor), Vice Dean, Faculty of Information Technology (homepage)\nThesis Title: Intent Detection and Slot Filling for Vietnamese Chatbots\nGPA: 3.3/4.0\nThesis defense score: 9.6/10.0\n\n\n\n\n\n\n🥉 10/2025: 3rd prize in Vietnamese Legal Document Retrieval Competition at VLSP 2025\n\nOur solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.\n\n🥈 08/2025: 2nd prize in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)\n\nBuilt an AI Agent System for document analysis and reporting.\n\n🥇 08/2024: Champion in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)\n\nBuilt a Hybrid Labeling Platform powered by LLMs.\n\n🥈 2023: 2nd prize in VNPT.AI Hackathon 2023\n\nBuilt an employee behavior analysis and reporting system.\n\n🥇 2020: 1st prize in ACM ICPC – PTIT 2020, Issued by Posts and Telecommunications Institute of Technology\n🥇 2018: 1st prize in MATH OLYMPIAD FOR STUDENTS 2018, Issued by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations\n\n\n\n\n\nXuan-Hieu Duong, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. paper\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023. paper\n\n\n\n\n\nMachine Learning Specialization — Stanford Online & DeepLearning.AI\nDeep Learning Specialization — DeepLearning.AI\nGenerative AI with Large Language Models — AWS & DeepLearning.AI\nMachine Learning in Production — DeepLearning.AI"
+  },
+  {
+    "objectID": "portfolio.html#experience",
+    "href": "portfolio.html#experience",
+    "title": "Hieu Duong",
+    "section": "",
+    "text": "05/2023 – Present: AI Engineer, FPT Smart Cloud\n\nDeveloped Large Language Models (LLMs) and core engines for AI Agents in real-world applications (chatbot systems and recommendation systems).\n\n10/2021 – 05/2023: AI Engineer, Innovation Center - VNPT-AI\n\nDeveloped information retrieval models for Vietnamese chatbots.\nConducted research on intent classification and slot filling for Vietnamese chatbots."
+  },
+  {
+    "objectID": "portfolio.html#education",
+    "href": "portfolio.html#education",
+    "title": "Hieu Duong",
+    "section": "",
+    "text": "2017 – 2022: B.Sc. in Engineering, Posts and Telecommunications Institute of Technology (PTIT) — Hanoi, Vietnam\n\nMajor: Information Technology\nSupervisor: Dr. Ngo Xuan Bach (Associate Professor), Vice Dean, Faculty of Information Technology (homepage)\nThesis Title: Intent Detection and Slot Filling for Vietnamese Chatbots\nGPA: 3.3/4.0\nThesis defense score: 9.6/10.0"
+  },
+  {
+    "objectID": "portfolio.html#awards-and-prizes",
+    "href": "portfolio.html#awards-and-prizes",
+    "title": "Hieu Duong",
+    "section": "",
+    "text": "🥉 10/2025: 3rd prize in Vietnamese Legal Document Retrieval Competition at VLSP 2025\n\nOur solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.\n\n🥈 08/2025: 2nd prize in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)\n\nBuilt an AI Agent System for document analysis and reporting.\n\n🥇 08/2024: Champion in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)\n\nBuilt a Hybrid Labeling Platform powered by LLMs.\n\n🥈 2023: 2nd prize in VNPT.AI Hackathon 2023\n\nBuilt an employee behavior analysis and reporting system.\n\n🥇 2020: 1st prize in ACM ICPC – PTIT 2020, Issued by Posts and Telecommunications Institute of Technology\n🥇 2018: 1st prize in MATH OLYMPIAD FOR STUDENTS 2018, Issued by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations"
+  },
+  {
+    "objectID": "portfolio.html#publications",
+    "href": "portfolio.html#publications",
+    "title": "Hieu Duong",
+    "section": "",
+    "text": "Xuan-Hieu Duong, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. paper\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023. paper"
+  },
+  {
     "objectID": "vi_posts.html",
     "href": "vi_posts.html",
     "title": "Recent Posts",
@@ -14,46 +49,18 @@
     "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "About",
-    "section": "",
-    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models. In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections."
-  },
-  {
-    "objectID": "index.html#education",
-    "href": "index.html#education",
-    "title": "About",
-    "section": "",
-    "text": "Bachelor of Science in Engineering, Posts and Telecommunications Institute of Technology, Hanoi, Vietnam (PTIT), 2017 – 2022.\n\nMajor: Information Techonology\nSupervisor: Dr. Ngo Xuan Bach, Associate Professor, Vice Dean of Faculty of Information Technology, Posts and Telecommunications Institute of Technology (PTIT), Hanoi, Vietnam. (Personal Home-page)\nAwards and Prizes:\n\n1st prize in calculus math at MATH OLYMPIAD FOR STUDENTS, 2018 organized by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations.\n1st prize at ACM ICPC – PTIT, 2020 organized by PTIT.\nSamsung Algorithm Certificate, sponsored and trained by Samsung & PTIT."
-  },
-  {
-    "objectID": "index.html#publications",
-    "href": "index.html#publications",
-    "title": "About",
-    "section": "",
-    "text": "Nguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023 paper"
-  },
-  {
-    "objectID": "index.html#experience",
-    "href": "index.html#experience",
-    "title": "About",
-    "section": "",
-    "text": "05/2023 - Present: AI Engineer at FPT Smart Cloud\n10/2021 - 05/2023: AI Engineer at Innovation Center - VNPT-AI"
-  },
-  {
-    "objectID": "index.html#certificates",
-    "href": "index.html#certificates",
-    "title": "About",
-    "section": "",
-    "text": "Course\n\n\n\n\n\nMachine Learning Specialization\nby Deeplearning.AI & Standford\n\n\nDeep Learning Specialization\nby Deeplearning.AI\n\n\nGoogle Data Analytics Professional\nby Google"
-  },
-  {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
     "title": "Post With Code",
     "section": "",
     "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "About",
+    "section": "",
+    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models. In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections."
   },
   {
     "objectID": "posts.html",
@@ -63,45 +70,10 @@
     "text": "Comming soon :D"
   },
   {
-    "objectID": "portfolio.html",
-    "href": "portfolio.html",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "05/2023 - Present: AI Engineer at FPT Smart Cloud\n\nDeveloped Large Language Models (LLMs) and core engines for AI Agents for real-world applications, such as chatbot systems and recommendation systems.\n\n10/2021 - 05/2023: AI Engineer at Innovation Center - VNPT-AI\n\nDeveloped information retrieval models for Vietnamese chatbot systems.\nResearched intent classification and slot filling for Vietnamese chatbot systems.\n\n\n\n\n\nBachelor of Science in Engineering, Posts and Telecommunications Institute of Technology, Hanoi, Vietnam (PTIT), 2017 – 2022.\n\nMajor: Information Techonology\nSupervisor: Dr. Ngo Xuan Bach, Associate Professor, Vice Dean of Faculty of Information Technology, Posts and Telecommunications Institute of Technology (PTIT), Hanoi, Vietnam. (Personal Home-page)\nAwards and Prizes:\n\n1st prize in calculus math at MATH OLYMPIAD FOR STUDENTS, 2018 organized by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations.\n1st prize at ACM ICPC – PTIT, 2020 organized by PTIT.\nSamsung Algorithm Certificate, sponsored and trained by Samsung & PTIT.\n\n\n\n\n\n\n🥉 10/2025: 3rd prize in Vietnamese Legal Document Retrieval Competition at VLSP 2025\n\nOur solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.\n\n🥈 08/2025: 2nd prize in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)\n\nBuilt an AI Agent System for document analysis and reporting.\n\n🥇 08/2024: Champion in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)\n\nBuilt a Hybrid Labeling Platform powered by LLMs.\n\n🥈 2023: 2nd prize in VNPT.AI Hackathon 2023\n🥇 2020: 1st prize in ACM ICPC – PTIT 2020\n🥇 2018: 1st prize in MATH OLYMPIAD FOR STUDENTS 2018\n\n\n\n\nXuan-Hieu Duong, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. paper\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023 paper"
-  },
-  {
-    "objectID": "portfolio.html#education",
-    "href": "portfolio.html#education",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "Bachelor of Science in Engineering, Posts and Telecommunications Institute of Technology, Hanoi, Vietnam (PTIT), 2017 – 2022.\n\nMajor: Information Techonology\nSupervisor: Dr. Ngo Xuan Bach, Associate Professor, Vice Dean of Faculty of Information Technology, Posts and Telecommunications Institute of Technology (PTIT), Hanoi, Vietnam. (Personal Home-page)\nAwards and Prizes:\n\n1st prize in calculus math at MATH OLYMPIAD FOR STUDENTS, 2018 organized by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations.\n1st prize at ACM ICPC – PTIT, 2020 organized by PTIT.\nSamsung Algorithm Certificate, sponsored and trained by Samsung & PTIT."
-  },
-  {
-    "objectID": "portfolio.html#publications",
-    "href": "portfolio.html#publications",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "Xuan-Hieu Duong, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. paper\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023 paper"
-  },
-  {
-    "objectID": "portfolio.html#experience",
-    "href": "portfolio.html#experience",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "05/2023 - Present: AI Engineer at FPT Smart Cloud\n\nDeveloped Large Language Models (LLMs) and core engines for AI Agents for real-world applications, such as chatbot systems and recommendation systems.\n\n10/2021 - 05/2023: AI Engineer at Innovation Center - VNPT-AI\n\nDeveloped information retrieval models for Vietnamese chatbot systems.\nResearched intent classification and slot filling for Vietnamese chatbot systems."
-  },
-  {
     "objectID": "portfolio.html#certificates",
     "href": "portfolio.html#certificates",
-    "title": "Portfolio",
-    "section": "",
-    "text": "Course\n\n\n\n\n\nMachine Learning Specialization\nby Deeplearning.AI & Standford\n\n\nDeep Learning Specialization\nby Deeplearning.AI\n\n\nGoogle Data Analytics Professional\nby Google"
-  },
-  {
-    "objectID": "portfolio.html#awards-and-prizes",
-    "href": "portfolio.html#awards-and-prizes",
     "title": "Hieu Duong",
     "section": "",
-    "text": "🥉 10/2025: 3rd prize in Vietnamese Legal Document Retrieval Competition at VLSP 2025\n\nOur solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.\n\n🥈 08/2025: 2nd prize in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)\n\nBuilt an AI Agent System for document analysis and reporting.\n\n🥇 08/2024: Champion in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)\n\nBuilt a Hybrid Labeling Platform powered by LLMs.\n\n🥈 2023: 2nd prize in VNPT.AI Hackathon 2023\n🥇 2020: 1st prize in ACM ICPC – PTIT 2020\n🥇 2018: 1st prize in MATH OLYMPIAD FOR STUDENTS 2018"
+    "text": "Machine Learning Specialization — Stanford Online & DeepLearning.AI\nDeep Learning Specialization — DeepLearning.AI\nGenerative AI with Large Language Models — AWS & DeepLearning.AI\nMachine Learning in Production — DeepLearning.AI"
   }
 ]
