@@ -11,7 +11,8 @@ about:
 
 ## Experience
 - **05/2023 – Present: AI Engineer**, [FPT Smart Cloud](https://fptsmartcloud.com/en/home/)
-  - Developed Large Language Models (LLMs) and core engines for AI Agents in real-world applications (chatbot systems and recommendation systems).
+  - Developed Large Language Models (LLMs) and core engines for AI Agents in real-world applications.
+  - Designed and built enterprise AI Agent workflows, integrating LLMs, tools, and business logic into end-to-end automated solutions.
 - **10/2021 – 05/2023: AI Engineer**, [Innovation Center - VNPT-AI](https://icenter.ai/en)
   - Developed information retrieval models for Vietnamese chatbots.
   - Conducted research on intent classification and slot filling for Vietnamese chatbots.
@@ -19,7 +20,7 @@ about:
 ## Education
 - **2017 – 2022: B.Sc. in Engineering**, [Posts and Telecommunications Institute of Technology (PTIT)](https://english.ptit.edu.vn/) — Hanoi, Vietnam
   - **Major**: Information Technology
-  - **Supervisor**: **Dr. Ngo Xuan Bach (Associate Professor)**, Vice Dean, Faculty of Information Technology ([homepage](https://sites.google.com/site/nxbachcs/home?authuser=0))
+  - **Supervisor**: **Dr. Ngo Xuan Bach (Associate Professor)** ([homepage](https://sites.google.com/site/nxbachcs/home?authuser=0))
   - **Thesis Title**: Intent Detection and Slot Filling for Vietnamese Chatbots
   - **GPA**: 3.3/4.0
   - **Thesis defense score**: 9.6/10.0
