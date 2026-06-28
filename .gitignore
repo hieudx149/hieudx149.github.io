@@ -2,4 +2,5 @@
 _site
 **/*.quarto_ipynb
 /cv/
-
+/.claude/
+.DS_Store

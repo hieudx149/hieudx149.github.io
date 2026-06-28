@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Hieu Duong">
+<meta name="dcterms.date" content="2026-06-28">
+<meta name="description" content="Vì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả.">
+
+<title>Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình – Hieu Duong</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-35155b22413c9ef7a79a96887d465071.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Hieu Duong</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html"> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../files/Hieu_Duong_CV.pdf" target="_blank"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hieudx149"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/hieu-duong-b55018165/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.facebook.com/xhd99"> <i class="bi bi-facebook" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Mục lục</h2>
+   
+  <ul>
+  <li><a href="#từ-prompt-engineering-đến-context-engineering" id="toc-từ-prompt-engineering-đến-context-engineering" class="nav-link active" data-scroll-target="#từ-prompt-engineering-đến-context-engineering">Từ prompt engineering đến context engineering</a></li>
+  <li><a href="#context-là-một-tài-nguyên-hữu-hạn" id="toc-context-là-một-tài-nguyên-hữu-hạn" class="nav-link" data-scroll-target="#context-là-một-tài-nguyên-hữu-hạn">Context là một tài nguyên hữu hạn</a>
+  <ul class="collapse">
+  <li><a href="#context-rot" id="toc-context-rot" class="nav-link" data-scroll-target="#context-rot">Context rot</a></li>
+  <li><a href="#ngân-sách-chú-ý-attention-budget" id="toc-ngân-sách-chú-ý-attention-budget" class="nav-link" data-scroll-target="#ngân-sách-chú-ý-attention-budget">Ngân sách chú ý (attention budget)</a></li>
+  </ul></li>
+  <li><a href="#giải-phẫu-một-context-tốt" id="toc-giải-phẫu-một-context-tốt" class="nav-link" data-scroll-target="#giải-phẫu-một-context-tốt">Giải phẫu một context tốt</a>
+  <ul class="collapse">
+  <li><a href="#system-prompt-tìm-đúng-độ-cao" id="toc-system-prompt-tìm-đúng-độ-cao" class="nav-link" data-scroll-target="#system-prompt-tìm-đúng-độ-cao">System prompt: tìm đúng “độ cao”</a></li>
+  <li><a href="#tools-hợp-đồng-giữa-agent-và-thế-giới" id="toc-tools-hợp-đồng-giữa-agent-và-thế-giới" class="nav-link" data-scroll-target="#tools-hợp-đồng-giữa-agent-và-thế-giới">Tools: hợp đồng giữa agent và thế giới</a></li>
+  <li><a href="#examples-một-bức-tranh-đáng-giá-ngàn-lời" id="toc-examples-một-bức-tranh-đáng-giá-ngàn-lời" class="nav-link" data-scroll-target="#examples-một-bức-tranh-đáng-giá-ngàn-lời">Examples: một bức tranh đáng giá ngàn lời</a></li>
+  </ul></li>
+  <li><a href="#khung-tư-duy-write-select-compress-isolate" id="toc-khung-tư-duy-write-select-compress-isolate" class="nav-link" data-scroll-target="#khung-tư-duy-write-select-compress-isolate">Khung tư duy: Write / Select / Compress / Isolate</a></li>
+  <li><a href="#kỹ-thuật-cho-tác-vụ-dài-hơi" id="toc-kỹ-thuật-cho-tác-vụ-dài-hơi" class="nav-link" data-scroll-target="#kỹ-thuật-cho-tác-vụ-dài-hơi">Kỹ thuật cho tác vụ dài hơi</a>
+  <ul class="collapse">
+  <li><a href="#just-in-time-retrieval-select" id="toc-just-in-time-retrieval-select" class="nav-link" data-scroll-target="#just-in-time-retrieval-select">1. Just-in-time retrieval (Select)</a></li>
+  <li><a href="#compaction-compress" id="toc-compaction-compress" class="nav-link" data-scroll-target="#compaction-compress">2. Compaction (Compress)</a></li>
+  <li><a href="#structured-note-taking-write" id="toc-structured-note-taking-write" class="nav-link" data-scroll-target="#structured-note-taking-write">3. Structured note-taking (Write)</a></li>
+  <li><a href="#sub-agent-architectures-isolate" id="toc-sub-agent-architectures-isolate" class="nav-link" data-scroll-target="#sub-agent-architectures-isolate">4. Sub-agent architectures (Isolate)</a></li>
+  </ul></li>
+  <li><a href="#checklist-thực-hành" id="toc-checklist-thực-hành" class="nav-link" data-scroll-target="#checklist-thực-hành">Checklist thực hành</a></li>
+  <li><a href="#kết" id="toc-kết" class="nav-link" data-scroll-target="#kết">Kết</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">ai-agents</div>
+    <div class="quarto-category">llm</div>
+    <div class="quarto-category">context-engineering</div>
+    <div class="quarto-category">tiếng-việt</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Vì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Hieu Duong </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 28, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lang-switch">
+<p>🌐 <strong>Tiếng Việt</strong> · <a href="index-en.html">English</a></p>
+</div>
+<blockquote class="blockquote">
+<p><em>“Context engineering đã trở thành công việc số 1 của kỹ sư xây dựng AI agent.”</em> — quan sát của đội ngũ Cognition, giữa năm 2025.</p>
+</blockquote>
+<p>Nếu bạn từng xây một AI agent và thấy nó hoạt động tốt trong demo nhưng “đãng trí”, lạc đề hoặc kém tin cậy khi chạy thật trong thời gian dài, thì rất có thể vấn đề không nằm ở prompt của bạn. Nó nằm ở <strong>mọi thứ khác</strong> mà mô hình đọc được: lịch sử hội thoại, kết quả từ tool, tài liệu được nạp vào, ghi chú cũ… Quản lý tốt tập hợp ấy chính là <strong>context engineering</strong>.</p>
+<p>Bài viết này tổng hợp lại tư duy và các kỹ thuật thực hành quanh chủ đề này — chủ yếu dựa trên bài viết <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><em>Effective context engineering for AI agents</em></a> của Anthropic, kết hợp với khung phân loại quen thuộc của LangChain.</p>
+<section id="từ-prompt-engineering-đến-context-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="từ-prompt-engineering-đến-context-engineering">Từ prompt engineering đến context engineering</h2>
+<p><strong>Prompt engineering</strong> là viết và sắp xếp chỉ dẫn cho mô hình — tối ưu cho một tác vụ rời rạc, một lần gọi.</p>
+<p><strong>Context engineering</strong> là một bước tiến hoá tự nhiên của nó: thay vì chỉ lo phần prompt, bạn quản lý <strong>toàn bộ tập token</strong> đưa vào mô hình ở mỗi lượt suy luận (inference), và làm việc đó <strong>lặp đi lặp lại</strong> xuyên suốt vòng đời của agent.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Định nghĩa ngắn gọn
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Context</strong> là tập hợp các token được đưa vào khi lấy mẫu (sampling) từ một LLM. <strong>Context engineering</strong> là bài toán tối ưu <em>độ hữu ích</em> của tập token đó trước những ràng buộc cố hữu của LLM, để đạt được kết quả mong muốn một cách ổn định.</p>
+</div>
+</div>
+<p>Khác biệt cốt lõi: prompt là thứ tĩnh bạn viết một lần; context là thứ <strong>động</strong>, phình to và biến đổi theo từng lượt agent hành động. Với một chatbot trả lời một câu hỏi, prompt engineering là đủ. Với một agent chạy hàng chục, hàng trăm lượt gọi tool, bạn buộc phải <em>điều phối</em> context.</p>
+</section>
+<section id="context-là-một-tài-nguyên-hữu-hạn" class="level2">
+<h2 class="anchored" data-anchor-id="context-là-một-tài-nguyên-hữu-hạn">Context là một tài nguyên hữu hạn</h2>
+<p>Trực giác sai lầm phổ biến nhất: “context window càng lớn thì càng tốt, cứ nhồi hết vào.” Thực tế ngược lại.</p>
+<section id="context-rot" class="level3">
+<h3 class="anchored" data-anchor-id="context-rot">Context rot</h3>
+<p>Nghiên cứu chỉ ra hiện tượng <strong>context rot</strong>: khi context window dài ra, độ chính xác của mô hình trong việc nhớ lại thông tin <strong>giảm dần</strong>. Mô hình vẫn “đọc được” nhưng độ chính xác khi truy hồi một chi tiết cụ thể suy giảm.</p>
+</section>
+<section id="ngân-sách-chú-ý-attention-budget" class="level3">
+<h3 class="anchored" data-anchor-id="ngân-sách-chú-ý-attention-budget">Ngân sách chú ý (attention budget)</h3>
+<p>Giống như con người có dung lượng trí nhớ làm việc giới hạn, LLM có một <strong>“ngân sách chú ý”</strong> hữu hạn và nó bị tiêu hao theo mỗi token mới. Nguyên nhân nằm ở kiến trúc transformer: mỗi token phải “chú ý” tới mọi token khác, tạo ra <strong>n² mối quan hệ cặp đôi</strong> cho n token. Context càng dài, sự chú ý ấy càng bị dàn mỏng.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Nguyên tắc xuyên suốt
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mục tiêu của context engineering là tìm <strong>tập token nhỏ nhất, mật độ tín hiệu cao nhất</strong> để tối đa hoá khả năng đạt được kết quả mong muốn. Context là tài nguyên <em>quý và hữu hạn</em> — hãy chi tiêu nó một cách dè sẻn.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="giải-phẫu-một-context-tốt" class="level2">
+<h2 class="anchored" data-anchor-id="giải-phẫu-một-context-tốt">Giải phẫu một context tốt</h2>
+<p>Một context được dựng tốt thường gồm các thành phần được sắp xếp có chủ đích: <strong>system prompt → bộ nhớ/ghi chú liên quan → định nghĩa tool → ví dụ → lịch sử hội thoại</strong>. Chất lượng và thứ tự của chúng quyết định hiệu năng nhiều hơn bất kỳ yếu tố đơn lẻ nào khác.</p>
+<section id="system-prompt-tìm-đúng-độ-cao" class="level3">
+<h3 class="anchored" data-anchor-id="system-prompt-tìm-đúng-độ-cao">System prompt: tìm đúng “độ cao”</h3>
+<p>System prompt dễ rơi vào hai thái cực:</p>
+<ul>
+<li><strong>Quá cứng nhắc:</strong> hardcode logic phức tạp, mong manh, dễ vỡ khi gặp tình huống mới.</li>
+<li><strong>Quá mơ hồ:</strong> chỉ đưa hướng dẫn chung chung, giả định mô hình đã hiểu ngữ cảnh mà thực ra nó không có.</li>
+</ul>
+<p>Điểm ngọt (Goldilocks zone) nằm ở <strong>“đúng độ cao”</strong> (the right altitude): đủ cụ thể để định hướng hành vi, nhưng đủ linh hoạt để mô hình tự suy luận bằng các heuristic mạnh.</p>
+<p>Gợi ý thực hành:</p>
+<ul>
+<li>Chia prompt thành các phần rõ ràng bằng <strong>thẻ XML</strong> hoặc <strong>tiêu đề Markdown</strong>.</li>
+<li>Nhắm tới <em>tập thông tin tối thiểu</em> mô tả đầy đủ hành vi mong đợi.</li>
+<li>Bắt đầu với prompt tối giản trên một mô hình mạnh, rồi <strong>thêm chỉ dẫn và ví dụ</strong> dựa trên những lỗi quan sát được trong thực tế.</li>
+</ul>
+</section>
+<section id="tools-hợp-đồng-giữa-agent-và-thế-giới" class="level3">
+<h3 class="anchored" data-anchor-id="tools-hợp-đồng-giữa-agent-và-thế-giới">Tools: hợp đồng giữa agent và thế giới</h3>
+<p>Tool định nghĩa “hợp đồng” giữa agent với không gian thông tin và hành động của nó. Tool tốt:</p>
+<ul>
+<li>Trả về thông tin <strong>tiết kiệm token</strong> (token-efficient).</li>
+<li><strong>Tự chứa</strong> (self-contained), rõ ràng về mục đích sử dụng.</li>
+<li>Tránh bộ tool <strong>phình to</strong> hoặc có những <strong>điểm quyết định mơ hồ</strong> khiến agent lúng túng không biết chọn tool nào.</li>
+</ul>
+</section>
+<section id="examples-một-bức-tranh-đáng-giá-ngàn-lời" class="level3">
+<h3 class="anchored" data-anchor-id="examples-một-bức-tranh-đáng-giá-ngàn-lời">Examples: một bức tranh đáng giá ngàn lời</h3>
+<p>Đừng nhồi prompt bằng một danh sách dài các edge case. Thay vào đó, hãy chọn vài <strong>ví dụ canonical, đa dạng</strong> thể hiện đúng hành vi mong muốn. Với LLM, ví dụ chính là “bức tranh đáng giá ngàn lời”.</p>
+</section>
+</section>
+<section id="khung-tư-duy-write-select-compress-isolate" class="level2">
+<h2 class="anchored" data-anchor-id="khung-tư-duy-write-select-compress-isolate">Khung tư duy: Write / Select / Compress / Isolate</h2>
+<p>LangChain (Lance Martin) hệ thống hoá các chiến lược context engineering thành bốn nhóm. Đây là một khung gọn để ghi nhớ:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 22%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Chiến lược</th>
+<th>Ý nghĩa</th>
+<th>Ví dụ kỹ thuật</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Write</strong> (Ghi)</td>
+<td>Lưu context <em>ra ngoài</em> context window để dùng lại</td>
+<td>Scratchpad, ghi chú có cấu trúc, memory tool</td>
+</tr>
+<tr class="even">
+<td><strong>Select</strong> (Chọn)</td>
+<td>Kéo <em>đúng</em> context vào window khi cần</td>
+<td>Just-in-time retrieval, agentic search (glob/grep)</td>
+</tr>
+<tr class="odd">
+<td><strong>Compress</strong> (Nén)</td>
+<td>Chỉ giữ lại token thật sự cần</td>
+<td>Compaction, tóm tắt, dọn kết quả tool đã xử lý</td>
+</tr>
+<tr class="even">
+<td><strong>Isolate</strong> (Tách)</td>
+<td>Chia nhỏ context để khỏi nhiễu lẫn nhau</td>
+<td>Kiến trúc sub-agent, context window riêng cho từng việc</td>
+</tr>
+</tbody>
+</table>
+<p>Bốn kỹ thuật ở phần tiếp theo đều ánh xạ vào khung này.</p>
+</section>
+<section id="kỹ-thuật-cho-tác-vụ-dài-hơi" class="level2">
+<h2 class="anchored" data-anchor-id="kỹ-thuật-cho-tác-vụ-dài-hơi">Kỹ thuật cho tác vụ dài hơi</h2>
+<p>Khi agent chạy lâu — duyệt code, nghiên cứu nhiều bước, xử lý quy trình nhiều giai đoạn — context tích luỹ nhanh đến mức chạm trần window. Đây là lúc cần các kỹ thuật chuyên dụng.</p>
+<section id="just-in-time-retrieval-select" class="level3">
+<h3 class="anchored" data-anchor-id="just-in-time-retrieval-select">1. Just-in-time retrieval (Select)</h3>
+<p>Thay vì nạp sẵn <em>toàn bộ</em> dữ liệu vào context ngay từ đầu, agent chỉ giữ những <strong>định danh nhẹ</strong> (đường dẫn file, truy vấn đã lưu, link web…) và <strong>nạp context vào lúc runtime</strong> khi thực sự cần.</p>
+<p>Điều này phản ánh đúng cách con người làm việc: ta không thuộc lòng cả thư viện, mà dùng hệ thống tổ chức và đánh chỉ mục bên ngoài. Bản thân metadata (cấu trúc thư mục, quy ước đặt tên, timestamp) đã là tín hiệu giúp agent khám phá thông tin <strong>theo từng lớp</strong> — gọi là <em>progressive disclosure</em>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Agentic search thay vì chỉ embedding
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cho agent công cụ tự khám phá môi trường (<code>glob</code>, <code>grep</code>, đọc file theo nhu cầu) giúp tránh các vấn đề của index tĩnh: chỉ mục cũ (stale), embedding lỗi thời. Đánh đổi là tốc độ chậm hơn — nên nhiều agent mạnh dùng <strong>cách lai (hybrid)</strong>: nạp sẵn một phần dữ liệu cho nhanh, đồng thời giữ khả năng tự khám phá.</p>
+</div>
+</div>
+</section>
+<section id="compaction-compress" class="level3">
+<h3 class="anchored" data-anchor-id="compaction-compress">2. Compaction (Compress)</h3>
+<p><strong>Compaction</strong> = khi hội thoại gần chạm trần context window, hãy <strong>tóm tắt</strong> nội dung của nó rồi khởi tạo lại một context window mới chỉ với bản tóm tắt đó.</p>
+<p>Nghệ thuật nằm ở chỗ chọn <em>giữ gì, bỏ gì</em>:</p>
+<ol type="1">
+<li>Bắt đầu bằng việc <strong>tối đa hoá recall</strong> — đảm bảo prompt tóm tắt bắt được mọi thông tin liên quan.</li>
+<li>Sau đó <strong>lặp để tăng precision</strong> — loại bỏ những phần thừa.</li>
+</ol>
+<p>Một cách an toàn: sau khi đã xử lý xong, <strong>xoá phần lệnh gọi tool và kết quả thô</strong>, chỉ giữ lại kết luận cốt lõi.</p>
+</section>
+<section id="structured-note-taking-write" class="level3">
+<h3 class="anchored" data-anchor-id="structured-note-taking-write">3. Structured note-taking (Write)</h3>
+<p>Cho agent <strong>ghi chú ra ngoài context window</strong> một cách đều đặn, rồi truy hồi lại khi cần. Đây là bộ nhớ bền bỉ với chi phí rất thấp: agent theo dõi tiến độ qua các tác vụ phức tạp, giữ lại các phụ thuộc và bối cảnh quan trọng mà không làm phình window.</p>
+<p>Anthropic đã phát hành một <strong>memory tool</strong> dạng lưu trữ trên file, cho phép agent xây dựng cơ sở tri thức theo thời gian, duy trì trạng thái dự án xuyên nhiều phiên làm việc, và tham chiếu lại công việc trước đó.</p>
+</section>
+<section id="sub-agent-architectures-isolate" class="level3">
+<h3 class="anchored" data-anchor-id="sub-agent-architectures-isolate">4. Sub-agent architectures (Isolate)</h3>
+<p>Giao các tác vụ tập trung cho các <strong>sub-agent chuyên biệt</strong>, mỗi agent làm việc trong một <strong>context window sạch riêng</strong> và chỉ trả về một <strong>bản tóm tắt cô đọng</strong> (thường chỉ 1.000–2.000 token).</p>
+<p>Lợi ích là <strong>tách bạch mối quan tâm</strong> (separation of concerns): toàn bộ context tìm kiếm chi tiết, lộn xộn được cô lập trong sub-agent, còn agent điều phối (lead agent) chỉ tổng hợp các kết quả đã chắt lọc.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-subagent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-subagent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 522.90 138.40" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 134.4)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-134.4 518.9,-134.4 518.9,4 -4,4"></polygon>
+<!-- lead -->
+<g id="node1" class="node">
+<title>lead</title>
+<path fill="none" stroke="black" d="M309.48,-130.2C309.48,-130.2 246.23,-130.2 246.23,-130.2 240.23,-130.2 234.23,-124.2 234.23,-118.2 234.23,-118.2 234.23,-101 234.23,-101 234.23,-95 240.23,-89 246.23,-89 246.23,-89 309.48,-89 309.48,-89 315.48,-89 321.48,-95 321.48,-101 321.48,-101 321.48,-118.2 321.48,-118.2 321.48,-124.2 315.48,-130.2 309.48,-130.2"></path>
+<text text-anchor="middle" x="277.85" y="-113.8" font-family="Helvetica,sans-Serif" font-size="14.00">Lead Agent</text>
+<text text-anchor="middle" x="277.85" y="-97" font-family="Helvetica,sans-Serif" font-size="14.00">(tổng hợp)</text>
+</g>
+<!-- s1 -->
+<g id="node2" class="node">
+<title>s1</title>
+<path fill="none" stroke="black" d="M141.57,-36C141.57,-36 12.14,-36 12.14,-36 6.14,-36 0.14,-30 0.14,-24 0.14,-24 0.14,-12 0.14,-12 0.14,-6 6.14,0 12.14,0 12.14,0 141.57,0 141.57,0 147.57,0 153.57,-6 153.57,-12 153.57,-12 153.57,-24 153.57,-24 153.57,-30 147.57,-36 141.57,-36"></path>
+<text text-anchor="middle" x="76.85" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">Sub-agent: Tìm kiếm</text>
+</g>
+<!-- lead&#45;&gt;s1 -->
+<g id="edge1" class="edge">
+<title>lead-&gt;s1</title>
+<path fill="none" stroke="black" d="M233.85,-106.89C179.7,-103.75 92.45,-94.99 72.3,-70.8 66.66,-64.02 65.98,-54.86 67.31,-46.14"></path>
+<polygon fill="black" stroke="black" points="70.75,-46.79 69.61,-36.26 63.94,-45.2 70.75,-46.79"></polygon>
+<text text-anchor="middle" x="84.13" y="-58.2" font-family="Times,serif" font-size="14.00">task</text>
+</g>
+<!-- s2 -->
+<g id="node3" class="node">
+<title>s2</title>
+<path fill="none" stroke="black" d="M314.78,-36C314.78,-36 186.93,-36 186.93,-36 180.93,-36 174.93,-30 174.93,-24 174.93,-24 174.93,-12 174.93,-12 174.93,-6 180.93,0 186.93,0 186.93,0 314.78,0 314.78,0 320.78,0 326.78,-6 326.78,-12 326.78,-12 326.78,-24 326.78,-24 326.78,-30 320.78,-36 314.78,-36"></path>
+<text text-anchor="middle" x="250.85" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">Sub-agent: Phân tích</text>
+</g>
+<!-- lead&#45;&gt;s2 -->
+<g id="edge2" class="edge">
+<title>lead-&gt;s2</title>
+<path fill="none" stroke="black" d="M264.6,-88.91C261.38,-83.28 258.29,-76.98 256.3,-70.8 253.8,-63.02 252.38,-54.28 251.6,-46.22"></path>
+<polygon fill="black" stroke="black" points="255.09,-45.89 250.9,-36.16 248.1,-46.38 255.09,-45.89"></polygon>
+<text text-anchor="middle" x="268.13" y="-58.2" font-family="Times,serif" font-size="14.00">task</text>
+</g>
+<!-- s3 -->
+<g id="node4" class="node">
+<title>s3</title>
+<path fill="none" stroke="black" d="M502.94,-36C502.94,-36 356.77,-36 356.77,-36 350.77,-36 344.77,-30 344.77,-24 344.77,-24 344.77,-12 344.77,-12 344.77,-6 350.77,0 356.77,0 356.77,0 502.94,0 502.94,0 508.94,0 514.94,-6 514.94,-12 514.94,-12 514.94,-24 514.94,-24 514.94,-30 508.94,-36 502.94,-36"></path>
+<text text-anchor="middle" x="429.85" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">Sub-agent: Kiểm chứng</text>
+</g>
+<!-- lead&#45;&gt;s3 -->
+<g id="edge3" class="edge">
+<title>lead-&gt;s3</title>
+<path fill="none" stroke="black" d="M311.21,-88.94C335.03,-74.9 367.11,-55.99 391.9,-41.37"></path>
+<polygon fill="black" stroke="black" points="393.84,-44.29 400.68,-36.2 390.29,-38.26 393.84,-44.29"></polygon>
+<text text-anchor="middle" x="379.13" y="-58.2" font-family="Times,serif" font-size="14.00">task</text>
+</g>
+<!-- s1&#45;&gt;lead -->
+<g id="edge4" class="edge">
+<title>s1-&gt;lead</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M91.72,-36.26C102.39,-47.63 117.72,-62 133.96,-70.8 161.76,-85.88 195.9,-95.18 223.94,-100.78"></path>
+<polygon fill="black" stroke="black" points="223.49,-104.26 233.97,-102.68 224.8,-97.38 223.49,-104.26"></polygon>
+<text text-anchor="middle" x="192.3" y="-58.2" font-family="Times,serif" font-size="14.00">tóm tắt ~1-2k token</text>
+</g>
+<!-- s2&#45;&gt;lead -->
+<g id="edge5" class="edge">
+<title>s2-&gt;lead</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M268.28,-36.09C272.57,-41.38 276.59,-47.54 278.85,-54 281.59,-61.8 282.35,-70.62 282.16,-78.86"></path>
+<polygon fill="black" stroke="black" points="278.66,-78.66 281.48,-88.87 285.65,-79.13 278.66,-78.66"></polygon>
+<text text-anchor="middle" x="304.63" y="-58.2" font-family="Times,serif" font-size="14.00">tóm tắt</text>
+</g>
+<!-- s3&#45;&gt;lead -->
+<g id="edge6" class="edge">
+<title>s3-&gt;lead</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M422.03,-36.14C416.06,-47.45 406.83,-61.8 394.85,-70.8 376.44,-84.64 352.76,-93.53 331.53,-99.18"></path>
+<polygon fill="black" stroke="black" points="330.52,-95.83 321.66,-101.63 332.2,-102.62 330.52,-95.83"></polygon>
+<text text-anchor="middle" x="431.63" y="-58.2" font-family="Times,serif" font-size="14.00">tóm tắt</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-subagent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Lead agent điều phối các sub-agent với context window riêng biệt.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="checklist-thực-hành" class="level2">
+<h2 class="anchored" data-anchor-id="checklist-thực-hành">Checklist thực hành</h2>
+<p>Khi agent của bạn “hành xử lạ”, hãy kiểm tra context trước khi đổ lỗi cho mô hình:</p>
+<ul class="task-list">
+<li><label><input type="checkbox">System prompt có đang ở <strong>đúng độ cao</strong> không, hay quá cứng / quá mơ hồ?</label></li>
+<li><label><input type="checkbox">Có <strong>tool nào thừa, chồng chéo</strong> hoặc gây nhập nhằng lựa chọn không?</label></li>
+<li><label><input type="checkbox">Có đang nhồi quá nhiều <strong>edge case</strong> thay vì vài ví dụ canonical không?</label></li>
+<li><label><input type="checkbox">Context có chứa <strong>lịch sử cũ, tài liệu sai, kết quả tool đã hết giá trị</strong> không?</label></li>
+<li><label><input type="checkbox">Với tác vụ dài: đã có cơ chế <strong>compaction / ghi chú / sub-agent</strong> chưa?</label></li>
+<li><label><input type="checkbox">Bạn có đang nạp sẵn dữ liệu không cần thiết, thay vì <strong>just-in-time</strong> không?</label></li>
+</ul>
+</section>
+<section id="kết" class="level2">
+<h2 class="anchored" data-anchor-id="kết">Kết</h2>
+<p>Xu hướng dài hạn khá rõ: khi mô hình ngày càng mạnh, thiết kế agent dịch chuyển theo hướng <strong>để mô hình thông minh tự hành xử thông minh</strong>, với ngày càng ít sự can thiệp thủ công của con người. Nhưng dù năng lực mô hình có tăng đến đâu, context vẫn là một tài nguyên hữu hạn, và việc <strong>chắt lọc nó một cách có chủ đích</strong> vẫn sẽ là kỹ năng cốt lõi để xây dựng những agent đáng tin cậy.</p>
+<p>Tư duy cần nhớ gọn trong một câu: <em>tìm tập token nhỏ nhất, tín hiệu cao nhất, cho từng bước agent hành động.</em></p>
+<hr>
+<p><strong>Nguồn tham khảo:</strong></p>
+<ul>
+<li>Anthropic — <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><em>Effective context engineering for AI agents</em></a></li>
+<li>LangChain — <a href="https://blog.langchain.com/context-engineering-for-agents/"><em>Context Engineering for Agents</em></a> (khung Write / Select / Compress / Isolate)</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

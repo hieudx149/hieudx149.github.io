@@ -90,23 +90,16 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./portfolio.html"> 
-<span class="menu-text">Portfolio</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./posts.html"> 
 <span class="menu-text">Posts</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./vi_posts.html"> 
-<span class="menu-text">Tiếng Việt</span></a>
-  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./files/Hieu_Duong_CV.pdf" target="_blank"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">CV</span></a>
+  </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/hieudx149"> <i class="bi bi-github" role="img">
 </i> 
@@ -141,6 +134,8 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="quarto-about-jolla">
+  <img src="profile.jpg" class="about-image
+  round " style="height: 12em; width: 12em;">
  <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">About</h1>
@@ -149,7 +144,26 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </header><div id="about-me">
 <p>Hello !<br> My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at <a href="https://fptsmartcloud.com/en/home/">FPT Smart Cloud</a>. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models.<br><br> In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections.</p>
-</div>  
+</div> 
+  <hr class="about-sep">
+   <div class="about-links">
+  <a href="/files/Hieu_Duong_CV.pdf" class="about-link" rel="" target="_blank">
+    <i class="bi bi-file-earmark-pdf"></i>
+     <span class="about-link-text">CV</span>
+  </a>
+  <a href="https://github.com/hieudx149" class="about-link" rel="" target="">
+    <i class="bi bi-github"></i>
+     <span class="about-link-text">GitHub</span>
+  </a>
+  <a href="https://www.linkedin.com/in/hieu-duong-b55018165/" class="about-link" rel="" target="">
+    <i class="bi bi-linkedin"></i>
+     <span class="about-link-text">LinkedIn</span>
+  </a>
+  <a href="mailto:duongxuanhieu1999@gmail.com" class="about-link" rel="" target="">
+    <i class="bi bi-envelope"></i>
+     <span class="about-link-text">Email</span>
+  </a>
+</div>
 </div>
 
 
@@ -223,7 +237,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/hieudx149\.github\.io\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

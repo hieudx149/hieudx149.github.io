@@ -1,0 +1,180 @@
+---
+title: "Context Engineering cho AI Agents: Nghệ thuật quản lý 'trí nhớ' của mô hình"
+author: "Hieu Duong"
+date: "2026-06-28"
+categories: [ai-agents, llm, context-engineering, tiếng-việt]
+description: "Vì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả."
+toc: true
+toc-depth: 3
+toc-title: "Mục lục"
+---
+
+::: {.lang-switch}
+🌐 **Tiếng Việt** · [English](index-en.html)
+:::
+
+> *"Context engineering đã trở thành công việc số 1 của kỹ sư xây dựng AI agent."* — quan sát của đội ngũ Cognition, giữa năm 2025.
+
+Nếu bạn từng xây một AI agent và thấy nó hoạt động tốt trong demo nhưng "đãng trí", lạc đề hoặc kém tin cậy khi chạy thật trong thời gian dài, thì rất có thể vấn đề không nằm ở prompt của bạn. Nó nằm ở **mọi thứ khác** mà mô hình đọc được: lịch sử hội thoại, kết quả từ tool, tài liệu được nạp vào, ghi chú cũ... Quản lý tốt tập hợp ấy chính là **context engineering**.
+
+Bài viết này tổng hợp lại tư duy và các kỹ thuật thực hành quanh chủ đề này — chủ yếu dựa trên bài viết [*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) của Anthropic, kết hợp với khung phân loại quen thuộc của LangChain.
+
+## Từ prompt engineering đến context engineering
+
+**Prompt engineering** là viết và sắp xếp chỉ dẫn cho mô hình — tối ưu cho một tác vụ rời rạc, một lần gọi.
+
+**Context engineering** là một bước tiến hoá tự nhiên của nó: thay vì chỉ lo phần prompt, bạn quản lý **toàn bộ tập token** đưa vào mô hình ở mỗi lượt suy luận (inference), và làm việc đó **lặp đi lặp lại** xuyên suốt vòng đời của agent.
+
+::: {.callout-note}
+## Định nghĩa ngắn gọn
+
+**Context** là tập hợp các token được đưa vào khi lấy mẫu (sampling) từ một LLM. **Context engineering** là bài toán tối ưu *độ hữu ích* của tập token đó trước những ràng buộc cố hữu của LLM, để đạt được kết quả mong muốn một cách ổn định.
+:::
+
+Khác biệt cốt lõi: prompt là thứ tĩnh bạn viết một lần; context là thứ **động**, phình to và biến đổi theo từng lượt agent hành động. Với một chatbot trả lời một câu hỏi, prompt engineering là đủ. Với một agent chạy hàng chục, hàng trăm lượt gọi tool, bạn buộc phải *điều phối* context.
+
+## Context là một tài nguyên hữu hạn
+
+Trực giác sai lầm phổ biến nhất: "context window càng lớn thì càng tốt, cứ nhồi hết vào." Thực tế ngược lại.
+
+### Context rot
+
+Nghiên cứu chỉ ra hiện tượng **context rot**: khi context window dài ra, độ chính xác của mô hình trong việc nhớ lại thông tin **giảm dần**. Mô hình vẫn "đọc được" nhưng độ chính xác khi truy hồi một chi tiết cụ thể suy giảm.
+
+### Ngân sách chú ý (attention budget)
+
+Giống như con người có dung lượng trí nhớ làm việc giới hạn, LLM có một **"ngân sách chú ý"** hữu hạn và nó bị tiêu hao theo mỗi token mới. Nguyên nhân nằm ở kiến trúc transformer: mỗi token phải "chú ý" tới mọi token khác, tạo ra **n² mối quan hệ cặp đôi** cho n token. Context càng dài, sự chú ý ấy càng bị dàn mỏng.
+
+::: {.callout-important}
+## Nguyên tắc xuyên suốt
+
+Mục tiêu của context engineering là tìm **tập token nhỏ nhất, mật độ tín hiệu cao nhất** để tối đa hoá khả năng đạt được kết quả mong muốn. Context là tài nguyên *quý và hữu hạn* — hãy chi tiêu nó một cách dè sẻn.
+:::
+
+## Giải phẫu một context tốt
+
+Một context được dựng tốt thường gồm các thành phần được sắp xếp có chủ đích: **system prompt → bộ nhớ/ghi chú liên quan → định nghĩa tool → ví dụ → lịch sử hội thoại**. Chất lượng và thứ tự của chúng quyết định hiệu năng nhiều hơn bất kỳ yếu tố đơn lẻ nào khác.
+
+### System prompt: tìm đúng "độ cao"
+
+System prompt dễ rơi vào hai thái cực:
+
+- **Quá cứng nhắc:** hardcode logic phức tạp, mong manh, dễ vỡ khi gặp tình huống mới.
+- **Quá mơ hồ:** chỉ đưa hướng dẫn chung chung, giả định mô hình đã hiểu ngữ cảnh mà thực ra nó không có.
+
+Điểm ngọt (Goldilocks zone) nằm ở **"đúng độ cao"** (the right altitude): đủ cụ thể để định hướng hành vi, nhưng đủ linh hoạt để mô hình tự suy luận bằng các heuristic mạnh.
+
+Gợi ý thực hành:
+
+- Chia prompt thành các phần rõ ràng bằng **thẻ XML** hoặc **tiêu đề Markdown**.
+- Nhắm tới *tập thông tin tối thiểu* mô tả đầy đủ hành vi mong đợi.
+- Bắt đầu với prompt tối giản trên một mô hình mạnh, rồi **thêm chỉ dẫn và ví dụ** dựa trên những lỗi quan sát được trong thực tế.
+
+### Tools: hợp đồng giữa agent và thế giới
+
+Tool định nghĩa "hợp đồng" giữa agent với không gian thông tin và hành động của nó. Tool tốt:
+
+- Trả về thông tin **tiết kiệm token** (token-efficient).
+- **Tự chứa** (self-contained), rõ ràng về mục đích sử dụng.
+- Tránh bộ tool **phình to** hoặc có những **điểm quyết định mơ hồ** khiến agent lúng túng không biết chọn tool nào.
+
+### Examples: một bức tranh đáng giá ngàn lời
+
+Đừng nhồi prompt bằng một danh sách dài các edge case. Thay vào đó, hãy chọn vài **ví dụ canonical, đa dạng** thể hiện đúng hành vi mong muốn. Với LLM, ví dụ chính là "bức tranh đáng giá ngàn lời".
+
+## Khung tư duy: Write / Select / Compress / Isolate
+
+LangChain (Lance Martin) hệ thống hoá các chiến lược context engineering thành bốn nhóm. Đây là một khung gọn để ghi nhớ:
+
+| Chiến lược | Ý nghĩa | Ví dụ kỹ thuật |
+| ---------- | ------- | -------------- |
+| **Write** (Ghi) | Lưu context *ra ngoài* context window để dùng lại | Scratchpad, ghi chú có cấu trúc, memory tool |
+| **Select** (Chọn) | Kéo *đúng* context vào window khi cần | Just-in-time retrieval, agentic search (glob/grep) |
+| **Compress** (Nén) | Chỉ giữ lại token thật sự cần | Compaction, tóm tắt, dọn kết quả tool đã xử lý |
+| **Isolate** (Tách) | Chia nhỏ context để khỏi nhiễu lẫn nhau | Kiến trúc sub-agent, context window riêng cho từng việc |
+
+Bốn kỹ thuật ở phần tiếp theo đều ánh xạ vào khung này.
+
+## Kỹ thuật cho tác vụ dài hơi
+
+Khi agent chạy lâu — duyệt code, nghiên cứu nhiều bước, xử lý quy trình nhiều giai đoạn — context tích luỹ nhanh đến mức chạm trần window. Đây là lúc cần các kỹ thuật chuyên dụng.
+
+### 1. Just-in-time retrieval (Select)
+
+Thay vì nạp sẵn *toàn bộ* dữ liệu vào context ngay từ đầu, agent chỉ giữ những **định danh nhẹ** (đường dẫn file, truy vấn đã lưu, link web...) và **nạp context vào lúc runtime** khi thực sự cần.
+
+Điều này phản ánh đúng cách con người làm việc: ta không thuộc lòng cả thư viện, mà dùng hệ thống tổ chức và đánh chỉ mục bên ngoài. Bản thân metadata (cấu trúc thư mục, quy ước đặt tên, timestamp) đã là tín hiệu giúp agent khám phá thông tin **theo từng lớp** — gọi là *progressive disclosure*.
+
+::: {.callout-tip}
+## Agentic search thay vì chỉ embedding
+
+Cho agent công cụ tự khám phá môi trường (`glob`, `grep`, đọc file theo nhu cầu) giúp tránh các vấn đề của index tĩnh: chỉ mục cũ (stale), embedding lỗi thời. Đánh đổi là tốc độ chậm hơn — nên nhiều agent mạnh dùng **cách lai (hybrid)**: nạp sẵn một phần dữ liệu cho nhanh, đồng thời giữ khả năng tự khám phá.
+:::
+
+### 2. Compaction (Compress)
+
+**Compaction** = khi hội thoại gần chạm trần context window, hãy **tóm tắt** nội dung của nó rồi khởi tạo lại một context window mới chỉ với bản tóm tắt đó.
+
+Nghệ thuật nằm ở chỗ chọn *giữ gì, bỏ gì*:
+
+1. Bắt đầu bằng việc **tối đa hoá recall** — đảm bảo prompt tóm tắt bắt được mọi thông tin liên quan.
+2. Sau đó **lặp để tăng precision** — loại bỏ những phần thừa.
+
+Một cách an toàn: sau khi đã xử lý xong, **xoá phần lệnh gọi tool và kết quả thô**, chỉ giữ lại kết luận cốt lõi.
+
+### 3. Structured note-taking (Write)
+
+Cho agent **ghi chú ra ngoài context window** một cách đều đặn, rồi truy hồi lại khi cần. Đây là bộ nhớ bền bỉ với chi phí rất thấp: agent theo dõi tiến độ qua các tác vụ phức tạp, giữ lại các phụ thuộc và bối cảnh quan trọng mà không làm phình window.
+
+Anthropic đã phát hành một **memory tool** dạng lưu trữ trên file, cho phép agent xây dựng cơ sở tri thức theo thời gian, duy trì trạng thái dự án xuyên nhiều phiên làm việc, và tham chiếu lại công việc trước đó.
+
+### 4. Sub-agent architectures (Isolate)
+
+Giao các tác vụ tập trung cho các **sub-agent chuyên biệt**, mỗi agent làm việc trong một **context window sạch riêng** và chỉ trả về một **bản tóm tắt cô đọng** (thường chỉ 1.000–2.000 token).
+
+Lợi ích là **tách bạch mối quan tâm** (separation of concerns): toàn bộ context tìm kiếm chi tiết, lộn xộn được cô lập trong sub-agent, còn agent điều phối (lead agent) chỉ tổng hợp các kết quả đã chắt lọc.
+
+```{dot}
+//| label: fig-subagent
+//| fig-cap: "Lead agent điều phối các sub-agent với context window riêng biệt."
+digraph G {
+  rankdir=TB;
+  node [shape=box, style=rounded, fontname="Helvetica"];
+
+  lead [label="Lead Agent\n(tổng hợp)"];
+  s1 [label="Sub-agent: Tìm kiếm"];
+  s2 [label="Sub-agent: Phân tích"];
+  s3 [label="Sub-agent: Kiểm chứng"];
+
+  lead -> s1 [label="task"];
+  lead -> s2 [label="task"];
+  lead -> s3 [label="task"];
+  s1 -> lead [label="tóm tắt ~1-2k token", style=dashed];
+  s2 -> lead [label="tóm tắt", style=dashed];
+  s3 -> lead [label="tóm tắt", style=dashed];
+}
+```
+
+## Checklist thực hành
+
+Khi agent của bạn "hành xử lạ", hãy kiểm tra context trước khi đổ lỗi cho mô hình:
+
+- [ ] System prompt có đang ở **đúng độ cao** không, hay quá cứng / quá mơ hồ?
+- [ ] Có **tool nào thừa, chồng chéo** hoặc gây nhập nhằng lựa chọn không?
+- [ ] Có đang nhồi quá nhiều **edge case** thay vì vài ví dụ canonical không?
+- [ ] Context có chứa **lịch sử cũ, tài liệu sai, kết quả tool đã hết giá trị** không?
+- [ ] Với tác vụ dài: đã có cơ chế **compaction / ghi chú / sub-agent** chưa?
+- [ ] Bạn có đang nạp sẵn dữ liệu không cần thiết, thay vì **just-in-time** không?
+
+## Kết
+
+Xu hướng dài hạn khá rõ: khi mô hình ngày càng mạnh, thiết kế agent dịch chuyển theo hướng **để mô hình thông minh tự hành xử thông minh**, với ngày càng ít sự can thiệp thủ công của con người. Nhưng dù năng lực mô hình có tăng đến đâu, context vẫn là một tài nguyên hữu hạn, và việc **chắt lọc nó một cách có chủ đích** vẫn sẽ là kỹ năng cốt lõi để xây dựng những agent đáng tin cậy.
+
+Tư duy cần nhớ gọn trong một câu: *tìm tập token nhỏ nhất, tín hiệu cao nhất, cho từng bước agent hành động.*
+
+---
+
+**Nguồn tham khảo:**
+
+- Anthropic — [*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- LangChain — [*Context Engineering for Agents*](https://blog.langchain.com/context-engineering-for-agents/) (khung Write / Select / Compress / Isolate)

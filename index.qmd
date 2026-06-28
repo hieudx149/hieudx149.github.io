@@ -3,6 +3,23 @@ title: "About"
 about:
   id: about-me
   template: jolla
+  image: profile.jpg
+  image-shape: round
+  image-width: 12em
+  links:
+    - icon: file-earmark-pdf
+      text: CV
+      href: files/Hieu_Duong_CV.pdf
+      target: _blank
+    - icon: github
+      text: GitHub
+      href: https://github.com/hieudx149
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/hieu-duong-b55018165/
+    - icon: envelope
+      text: Email
+      href: mailto:duongxuanhieu1999@gmail.com
 
 ---
 

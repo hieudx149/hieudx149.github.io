@@ -1,79 +1,128 @@
 [
   {
-    "objectID": "portfolio.html",
-    "href": "portfolio.html",
-    "title": "Hieu Duong",
+    "objectID": "posts/context-engineering-for-ai-agents/index.html",
+    "href": "posts/context-engineering-for-ai-agents/index.html",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
     "section": "",
-    "text": "05/2023 – Present: AI Engineer, FPT Smart Cloud\n\nDeveloped Large Language Models (LLMs) and core engines for AI Agents in real-world applications (chatbot systems and recommendation systems).\n\n10/2021 – 05/2023: AI Engineer, Innovation Center - VNPT-AI\n\nDeveloped information retrieval models for Vietnamese chatbots.\nConducted research on intent classification and slot filling for Vietnamese chatbots.\n\n\n\n\n\n\n2017 – 2022: B.Sc. in Engineering, Posts and Telecommunications Institute of Technology (PTIT) — Hanoi, Vietnam\n\nMajor: Information Technology\nSupervisor: Dr. Ngo Xuan Bach (Associate Professor), Vice Dean, Faculty of Information Technology (homepage)\nThesis Title: Intent Detection and Slot Filling for Vietnamese Chatbots\nGPA: 3.3/4.0\nThesis defense score: 9.6/10.0\n\n\n\n\n\n\n🥉 10/2025: 3rd prize in Vietnamese Legal Document Retrieval Competition at VLSP 2025\n\nOur solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.\n\n🥈 08/2025: 2nd prize in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)\n\nBuilt an AI Agent System for document analysis and reporting.\n\n🥇 08/2024: Champion in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)\n\nBuilt a Hybrid Labeling Platform powered by LLMs.\n\n🥈 2023: 2nd prize in VNPT.AI Hackathon 2023\n\nBuilt an employee behavior analysis and reporting system.\n\n🥇 2020: 1st prize in ACM ICPC – PTIT 2020, Issued by Posts and Telecommunications Institute of Technology\n🥇 2018: 1st prize in MATH OLYMPIAD FOR STUDENTS 2018, Issued by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations\n\n\n\n\n\nXuan-Hieu Duong, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. paper\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023. paper\n\n\n\n\n\nMachine Learning Specialization — Stanford Online & DeepLearning.AI\nDeep Learning Specialization — DeepLearning.AI\nGenerative AI with Large Language Models — AWS & DeepLearning.AI\nMachine Learning in Production — DeepLearning.AI"
+    "text": "🌐 Tiếng Việt · English\nNếu bạn từng xây một AI agent và thấy nó hoạt động tốt trong demo nhưng “đãng trí”, lạc đề hoặc kém tin cậy khi chạy thật trong thời gian dài, thì rất có thể vấn đề không nằm ở prompt của bạn. Nó nằm ở mọi thứ khác mà mô hình đọc được: lịch sử hội thoại, kết quả từ tool, tài liệu được nạp vào, ghi chú cũ… Quản lý tốt tập hợp ấy chính là context engineering.\nBài viết này tổng hợp lại tư duy và các kỹ thuật thực hành quanh chủ đề này — chủ yếu dựa trên bài viết Effective context engineering for AI agents của Anthropic, kết hợp với khung phân loại quen thuộc của LangChain."
   },
   {
-    "objectID": "portfolio.html#experience",
-    "href": "portfolio.html#experience",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "05/2023 – Present: AI Engineer, FPT Smart Cloud\n\nDeveloped Large Language Models (LLMs) and core engines for AI Agents in real-world applications (chatbot systems and recommendation systems).\n\n10/2021 – 05/2023: AI Engineer, Innovation Center - VNPT-AI\n\nDeveloped information retrieval models for Vietnamese chatbots.\nConducted research on intent classification and slot filling for Vietnamese chatbots."
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#từ-prompt-engineering-đến-context-engineering",
+    "href": "posts/context-engineering-for-ai-agents/index.html#từ-prompt-engineering-đến-context-engineering",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Từ prompt engineering đến context engineering",
+    "text": "Từ prompt engineering đến context engineering\nPrompt engineering là viết và sắp xếp chỉ dẫn cho mô hình — tối ưu cho một tác vụ rời rạc, một lần gọi.\nContext engineering là một bước tiến hoá tự nhiên của nó: thay vì chỉ lo phần prompt, bạn quản lý toàn bộ tập token đưa vào mô hình ở mỗi lượt suy luận (inference), và làm việc đó lặp đi lặp lại xuyên suốt vòng đời của agent.\n\n\n\n\n\n\nNoteĐịnh nghĩa ngắn gọn\n\n\n\nContext là tập hợp các token được đưa vào khi lấy mẫu (sampling) từ một LLM. Context engineering là bài toán tối ưu độ hữu ích của tập token đó trước những ràng buộc cố hữu của LLM, để đạt được kết quả mong muốn một cách ổn định.\n\n\nKhác biệt cốt lõi: prompt là thứ tĩnh bạn viết một lần; context là thứ động, phình to và biến đổi theo từng lượt agent hành động. Với một chatbot trả lời một câu hỏi, prompt engineering là đủ. Với một agent chạy hàng chục, hàng trăm lượt gọi tool, bạn buộc phải điều phối context."
   },
   {
-    "objectID": "portfolio.html#education",
-    "href": "portfolio.html#education",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "2017 – 2022: B.Sc. in Engineering, Posts and Telecommunications Institute of Technology (PTIT) — Hanoi, Vietnam\n\nMajor: Information Technology\nSupervisor: Dr. Ngo Xuan Bach (Associate Professor), Vice Dean, Faculty of Information Technology (homepage)\nThesis Title: Intent Detection and Slot Filling for Vietnamese Chatbots\nGPA: 3.3/4.0\nThesis defense score: 9.6/10.0"
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#context-là-một-tài-nguyên-hữu-hạn",
+    "href": "posts/context-engineering-for-ai-agents/index.html#context-là-một-tài-nguyên-hữu-hạn",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Context là một tài nguyên hữu hạn",
+    "text": "Context là một tài nguyên hữu hạn\nTrực giác sai lầm phổ biến nhất: “context window càng lớn thì càng tốt, cứ nhồi hết vào.” Thực tế ngược lại.\n\nContext rot\nNghiên cứu chỉ ra hiện tượng context rot: khi context window dài ra, độ chính xác của mô hình trong việc nhớ lại thông tin giảm dần. Mô hình vẫn “đọc được” nhưng độ chính xác khi truy hồi một chi tiết cụ thể suy giảm.\n\n\nNgân sách chú ý (attention budget)\nGiống như con người có dung lượng trí nhớ làm việc giới hạn, LLM có một “ngân sách chú ý” hữu hạn và nó bị tiêu hao theo mỗi token mới. Nguyên nhân nằm ở kiến trúc transformer: mỗi token phải “chú ý” tới mọi token khác, tạo ra n² mối quan hệ cặp đôi cho n token. Context càng dài, sự chú ý ấy càng bị dàn mỏng.\n\n\n\n\n\n\nImportantNguyên tắc xuyên suốt\n\n\n\nMục tiêu của context engineering là tìm tập token nhỏ nhất, mật độ tín hiệu cao nhất để tối đa hoá khả năng đạt được kết quả mong muốn. Context là tài nguyên quý và hữu hạn — hãy chi tiêu nó một cách dè sẻn."
   },
   {
-    "objectID": "portfolio.html#awards-and-prizes",
-    "href": "portfolio.html#awards-and-prizes",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "🥉 10/2025: 3rd prize in Vietnamese Legal Document Retrieval Competition at VLSP 2025\n\nOur solution demonstrates high efficiency and effectiveness for Vietnamese legal document retrieval.\n\n🥈 08/2025: 2nd prize in FPT Smart Cloud AI Hackathon 2025 (AIVerse Hackathon)\n\nBuilt an AI Agent System for document analysis and reporting.\n\n🥇 08/2024: Champion in FPT Smart Cloud AI Hackathon 2024 (We Are Hackathon)\n\nBuilt a Hybrid Labeling Platform powered by LLMs.\n\n🥈 2023: 2nd prize in VNPT.AI Hackathon 2023\n\nBuilt an employee behavior analysis and reporting system.\n\n🥇 2020: 1st prize in ACM ICPC – PTIT 2020, Issued by Posts and Telecommunications Institute of Technology\n🥇 2018: 1st prize in MATH OLYMPIAD FOR STUDENTS 2018, Issued by Vietnam Mathematical Society, Vietnam Unions Of Science And Technology Associations"
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#giải-phẫu-một-context-tốt",
+    "href": "posts/context-engineering-for-ai-agents/index.html#giải-phẫu-một-context-tốt",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Giải phẫu một context tốt",
+    "text": "Giải phẫu một context tốt\nMột context được dựng tốt thường gồm các thành phần được sắp xếp có chủ đích: system prompt → bộ nhớ/ghi chú liên quan → định nghĩa tool → ví dụ → lịch sử hội thoại. Chất lượng và thứ tự của chúng quyết định hiệu năng nhiều hơn bất kỳ yếu tố đơn lẻ nào khác.\n\nSystem prompt: tìm đúng “độ cao”\nSystem prompt dễ rơi vào hai thái cực:\n\nQuá cứng nhắc: hardcode logic phức tạp, mong manh, dễ vỡ khi gặp tình huống mới.\nQuá mơ hồ: chỉ đưa hướng dẫn chung chung, giả định mô hình đã hiểu ngữ cảnh mà thực ra nó không có.\n\nĐiểm ngọt (Goldilocks zone) nằm ở “đúng độ cao” (the right altitude): đủ cụ thể để định hướng hành vi, nhưng đủ linh hoạt để mô hình tự suy luận bằng các heuristic mạnh.\nGợi ý thực hành:\n\nChia prompt thành các phần rõ ràng bằng thẻ XML hoặc tiêu đề Markdown.\nNhắm tới tập thông tin tối thiểu mô tả đầy đủ hành vi mong đợi.\nBắt đầu với prompt tối giản trên một mô hình mạnh, rồi thêm chỉ dẫn và ví dụ dựa trên những lỗi quan sát được trong thực tế.\n\n\n\nTools: hợp đồng giữa agent và thế giới\nTool định nghĩa “hợp đồng” giữa agent với không gian thông tin và hành động của nó. Tool tốt:\n\nTrả về thông tin tiết kiệm token (token-efficient).\nTự chứa (self-contained), rõ ràng về mục đích sử dụng.\nTránh bộ tool phình to hoặc có những điểm quyết định mơ hồ khiến agent lúng túng không biết chọn tool nào.\n\n\n\nExamples: một bức tranh đáng giá ngàn lời\nĐừng nhồi prompt bằng một danh sách dài các edge case. Thay vào đó, hãy chọn vài ví dụ canonical, đa dạng thể hiện đúng hành vi mong muốn. Với LLM, ví dụ chính là “bức tranh đáng giá ngàn lời”."
   },
   {
-    "objectID": "portfolio.html#publications",
-    "href": "portfolio.html#publications",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "Xuan-Hieu Duong, Thanh-Dat Do. A Simple Two-Stage Retrieval Framework for Vietnamese Legal Document Retrieval. Proceedings of the 11th Workshop on Vietnamese Language and Speech Processing (VLSP), 2025. paper\nNguyen Anh Tu, Duong Xuan Hieu, Tu Minh Phuong, Ngo Xuan Bach. A Bidirectional Joint Model for Spoken Language Understanding. Proceedings of the 48th IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP), Greece, June 2023. paper"
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#khung-tư-duy-write-select-compress-isolate",
+    "href": "posts/context-engineering-for-ai-agents/index.html#khung-tư-duy-write-select-compress-isolate",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Khung tư duy: Write / Select / Compress / Isolate",
+    "text": "Khung tư duy: Write / Select / Compress / Isolate\nLangChain (Lance Martin) hệ thống hoá các chiến lược context engineering thành bốn nhóm. Đây là một khung gọn để ghi nhớ:\n\n\n\n\n\n\n\n\nChiến lược\nÝ nghĩa\nVí dụ kỹ thuật\n\n\n\n\nWrite (Ghi)\nLưu context ra ngoài context window để dùng lại\nScratchpad, ghi chú có cấu trúc, memory tool\n\n\nSelect (Chọn)\nKéo đúng context vào window khi cần\nJust-in-time retrieval, agentic search (glob/grep)\n\n\nCompress (Nén)\nChỉ giữ lại token thật sự cần\nCompaction, tóm tắt, dọn kết quả tool đã xử lý\n\n\nIsolate (Tách)\nChia nhỏ context để khỏi nhiễu lẫn nhau\nKiến trúc sub-agent, context window riêng cho từng việc\n\n\n\nBốn kỹ thuật ở phần tiếp theo đều ánh xạ vào khung này."
   },
   {
-    "objectID": "vi_posts.html",
-    "href": "vi_posts.html",
-    "title": "Recent Posts",
-    "section": "",
-    "text": "Comming soon :D"
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#kỹ-thuật-cho-tác-vụ-dài-hơi",
+    "href": "posts/context-engineering-for-ai-agents/index.html#kỹ-thuật-cho-tác-vụ-dài-hơi",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Kỹ thuật cho tác vụ dài hơi",
+    "text": "Kỹ thuật cho tác vụ dài hơi\nKhi agent chạy lâu — duyệt code, nghiên cứu nhiều bước, xử lý quy trình nhiều giai đoạn — context tích luỹ nhanh đến mức chạm trần window. Đây là lúc cần các kỹ thuật chuyên dụng.\n\n1. Just-in-time retrieval (Select)\nThay vì nạp sẵn toàn bộ dữ liệu vào context ngay từ đầu, agent chỉ giữ những định danh nhẹ (đường dẫn file, truy vấn đã lưu, link web…) và nạp context vào lúc runtime khi thực sự cần.\nĐiều này phản ánh đúng cách con người làm việc: ta không thuộc lòng cả thư viện, mà dùng hệ thống tổ chức và đánh chỉ mục bên ngoài. Bản thân metadata (cấu trúc thư mục, quy ước đặt tên, timestamp) đã là tín hiệu giúp agent khám phá thông tin theo từng lớp — gọi là progressive disclosure.\n\n\n\n\n\n\nTipAgentic search thay vì chỉ embedding\n\n\n\nCho agent công cụ tự khám phá môi trường (glob, grep, đọc file theo nhu cầu) giúp tránh các vấn đề của index tĩnh: chỉ mục cũ (stale), embedding lỗi thời. Đánh đổi là tốc độ chậm hơn — nên nhiều agent mạnh dùng cách lai (hybrid): nạp sẵn một phần dữ liệu cho nhanh, đồng thời giữ khả năng tự khám phá.\n\n\n\n\n2. Compaction (Compress)\nCompaction = khi hội thoại gần chạm trần context window, hãy tóm tắt nội dung của nó rồi khởi tạo lại một context window mới chỉ với bản tóm tắt đó.\nNghệ thuật nằm ở chỗ chọn giữ gì, bỏ gì:\n\nBắt đầu bằng việc tối đa hoá recall — đảm bảo prompt tóm tắt bắt được mọi thông tin liên quan.\nSau đó lặp để tăng precision — loại bỏ những phần thừa.\n\nMột cách an toàn: sau khi đã xử lý xong, xoá phần lệnh gọi tool và kết quả thô, chỉ giữ lại kết luận cốt lõi.\n\n\n3. Structured note-taking (Write)\nCho agent ghi chú ra ngoài context window một cách đều đặn, rồi truy hồi lại khi cần. Đây là bộ nhớ bền bỉ với chi phí rất thấp: agent theo dõi tiến độ qua các tác vụ phức tạp, giữ lại các phụ thuộc và bối cảnh quan trọng mà không làm phình window.\nAnthropic đã phát hành một memory tool dạng lưu trữ trên file, cho phép agent xây dựng cơ sở tri thức theo thời gian, duy trì trạng thái dự án xuyên nhiều phiên làm việc, và tham chiếu lại công việc trước đó.\n\n\n4. Sub-agent architectures (Isolate)\nGiao các tác vụ tập trung cho các sub-agent chuyên biệt, mỗi agent làm việc trong một context window sạch riêng và chỉ trả về một bản tóm tắt cô đọng (thường chỉ 1.000–2.000 token).\nLợi ích là tách bạch mối quan tâm (separation of concerns): toàn bộ context tìm kiếm chi tiết, lộn xộn được cô lập trong sub-agent, còn agent điều phối (lead agent) chỉ tổng hợp các kết quả đã chắt lọc.\n\n\n\n\n\n\n\n\nG\n\n\n\nlead\n\nLead Agent\n(tổng hợp)\n\n\n\ns1\n\nSub-agent: Tìm kiếm\n\n\n\nlead-&gt;s1\n\n\ntask\n\n\n\ns2\n\nSub-agent: Phân tích\n\n\n\nlead-&gt;s2\n\n\ntask\n\n\n\ns3\n\nSub-agent: Kiểm chứng\n\n\n\nlead-&gt;s3\n\n\ntask\n\n\n\ns1-&gt;lead\n\n\ntóm tắt ~1-2k token\n\n\n\ns2-&gt;lead\n\n\ntóm tắt\n\n\n\ns3-&gt;lead\n\n\ntóm tắt\n\n\n\n\n\n\nFigure 1: Lead agent điều phối các sub-agent với context window riêng biệt."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#checklist-thực-hành",
+    "href": "posts/context-engineering-for-ai-agents/index.html#checklist-thực-hành",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Checklist thực hành",
+    "text": "Checklist thực hành\nKhi agent của bạn “hành xử lạ”, hãy kiểm tra context trước khi đổ lỗi cho mô hình:\n\nSystem prompt có đang ở đúng độ cao không, hay quá cứng / quá mơ hồ?\nCó tool nào thừa, chồng chéo hoặc gây nhập nhằng lựa chọn không?\nCó đang nhồi quá nhiều edge case thay vì vài ví dụ canonical không?\nContext có chứa lịch sử cũ, tài liệu sai, kết quả tool đã hết giá trị không?\nVới tác vụ dài: đã có cơ chế compaction / ghi chú / sub-agent chưa?\nBạn có đang nạp sẵn dữ liệu không cần thiết, thay vì just-in-time không?"
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "posts/context-engineering-for-ai-agents/index.html#kết",
+    "href": "posts/context-engineering-for-ai-agents/index.html#kết",
+    "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
+    "section": "Kết",
+    "text": "Kết\nXu hướng dài hạn khá rõ: khi mô hình ngày càng mạnh, thiết kế agent dịch chuyển theo hướng để mô hình thông minh tự hành xử thông minh, với ngày càng ít sự can thiệp thủ công của con người. Nhưng dù năng lực mô hình có tăng đến đâu, context vẫn là một tài nguyên hữu hạn, và việc chắt lọc nó một cách có chủ đích vẫn sẽ là kỹ năng cốt lõi để xây dựng những agent đáng tin cậy.\nTư duy cần nhớ gọn trong một câu: tìm tập token nhỏ nhất, tín hiệu cao nhất, cho từng bước agent hành động.\n\nNguồn tham khảo:\n\nAnthropic — Effective context engineering for AI agents\nLangChain — Context Engineering for Agents (khung Write / Select / Compress / Isolate)"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Posts",
     "section": "",
-    "text": "This is a post with executable code."
+    "text": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình\n\n\n\nai-agents\n\nllm\n\ncontext-engineering\n\ntiếng-việt\n\n\n\nVì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả.\n\n\n\n\n\nJun 28, 2026\n\n\nHieu Duong\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "About",
     "section": "",
-    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models. In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections."
+    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models. In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections.\n \n  \n   \n  \n    \n     CV\n  \n  \n    \n     GitHub\n  \n  \n    \n     LinkedIn\n  \n  \n    \n     Email"
   },
   {
-    "objectID": "posts.html",
-    "href": "posts.html",
-    "title": "Recent Posts",
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
     "section": "",
-    "text": "Comming soon :D"
+    "text": "🌐 Tiếng Việt · English\nIf you’ve ever built an AI agent that worked great in a demo but became “forgetful,” went off track, or grew unreliable over a long real-world run, the problem is probably not in your prompt. It’s in everything else the model reads: conversation history, tool results, loaded documents, old notes… Managing that whole set well is what we call context engineering.\nThis post pulls together the mindset and the practical techniques around the topic — mostly based on Anthropic’s Effective context engineering for AI agents, combined with LangChain’s familiar taxonomy."
   },
   {
-    "objectID": "portfolio.html#certificates",
-    "href": "portfolio.html#certificates",
-    "title": "Hieu Duong",
-    "section": "",
-    "text": "Machine Learning Specialization — Stanford Online & DeepLearning.AI\nDeep Learning Specialization — DeepLearning.AI\nGenerative AI with Large Language Models — AWS & DeepLearning.AI\nMachine Learning in Production — DeepLearning.AI"
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#from-prompt-engineering-to-context-engineering",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#from-prompt-engineering-to-context-engineering",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "From prompt engineering to context engineering",
+    "text": "From prompt engineering to context engineering\nPrompt engineering is writing and arranging instructions for the model — optimizing for a discrete, single-shot task.\nContext engineering is its natural evolution: instead of only worrying about the prompt, you manage the entire set of tokens fed to the model at each inference step, and you do it repeatedly across the agent’s lifecycle.\n\n\n\n\n\n\nNoteA short definition\n\n\n\nContext is the set of tokens included when sampling from an LLM. Context engineering is the problem of optimizing the usefulness of that token set against the LLM’s inherent constraints, in order to reliably achieve the desired outcome.\n\n\nThe core difference: a prompt is something static you write once; context is dynamic — it grows and shifts with every turn the agent takes. For a chatbot answering one question, prompt engineering is enough. For an agent running dozens or hundreds of tool calls, you’re forced to orchestrate context."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#context-is-a-finite-resource",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#context-is-a-finite-resource",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "Context is a finite resource",
+    "text": "Context is a finite resource\nThe most common wrong intuition: “the bigger the context window, the better — just stuff everything in.” The reality is the opposite.\n\nContext rot\nResearch points to a phenomenon called context rot: as the context window gets longer, the model’s accuracy at recalling information degrades. The model can still “read” everything, but its precision in retrieving a specific detail drops.\n\n\nThe attention budget\nJust as humans have a limited working memory, an LLM has a finite “attention budget” that is depleted with every new token. The cause lies in the transformer architecture: each token must “attend” to every other token, creating n² pairwise relationships for n tokens. The longer the context, the more thinly that attention is spread.\n\n\n\n\n\n\nImportantThe principle running through all of this\n\n\n\nThe goal of context engineering is to find the smallest set of high-signal-density tokens that maximizes the likelihood of the desired outcome. Context is a precious and finite resource — spend it frugally."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#the-anatomy-of-good-context",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#the-anatomy-of-good-context",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "The anatomy of good context",
+    "text": "The anatomy of good context\nA well-constructed context usually consists of deliberately ordered components: system prompt → relevant memory/notes → tool definitions → examples → conversation history. Their quality and ordering drive performance more than any single other factor.\n\nSystem prompt: finding the right “altitude”\nSystem prompts tend to fall into two extremes:\n\nToo rigid: hardcoding complex, brittle logic that breaks on novel situations.\nToo vague: giving only generic guidance, assuming the model understands context it actually lacks.\n\nThe Goldilocks zone sits at the right altitude: specific enough to steer behavior, yet flexible enough to let the model reason with strong heuristics.\nPractical tips:\n\nSplit the prompt into clear sections using XML tags or Markdown headings.\nAim for the minimal set of information that fully describes the expected behavior.\nStart with a minimal prompt on a strong model, then add instructions and examples based on failures observed in practice.\n\n\n\nTools: the contract between the agent and the world\nA tool defines the “contract” between the agent and its space of information and actions. Good tools:\n\nReturn information that is token-efficient.\nAre self-contained and clear about their intended use.\nAvoid a bloated toolset or ambiguous decision points that leave the agent unsure which tool to pick.\n\n\n\nExamples: a picture is worth a thousand words\nDon’t stuff the prompt with a long list of edge cases. Instead, pick a few canonical, diverse examples that demonstrate the desired behavior. For an LLM, an example really is worth a thousand words."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#a-mental-model-write-select-compress-isolate",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#a-mental-model-write-select-compress-isolate",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "A mental model: Write / Select / Compress / Isolate",
+    "text": "A mental model: Write / Select / Compress / Isolate\nLangChain (Lance Martin) organizes context engineering strategies into four groups. It’s a compact framework worth remembering:\n\n\n\n\n\n\n\n\nStrategy\nMeaning\nExample techniques\n\n\n\n\nWrite\nStore context outside the context window for reuse\nScratchpad, structured notes, memory tool\n\n\nSelect\nPull the right context into the window when needed\nJust-in-time retrieval, agentic search (glob/grep)\n\n\nCompress\nKeep only the tokens that are truly needed\nCompaction, summarization, pruning processed tool results\n\n\nIsolate\nSplit context so the pieces don’t interfere\nSub-agent architectures, a separate context window per task\n\n\n\nThe four techniques in the next section all map onto this framework."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#techniques-for-long-horizon-tasks",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#techniques-for-long-horizon-tasks",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "Techniques for long-horizon tasks",
+    "text": "Techniques for long-horizon tasks\nWhen an agent runs for a long time — browsing code, doing multi-step research, handling multi-stage workflows — context accumulates fast enough to hit the window ceiling. This is where dedicated techniques are needed.\n\n1. Just-in-time retrieval (Select)\nInstead of preloading all the data into context up front, the agent keeps only lightweight identifiers (file paths, saved queries, web links…) and loads context at runtime when it’s actually needed.\nThis mirrors how people work: we don’t memorize an entire library — we use external systems for organization and indexing. The metadata itself (folder structure, naming conventions, timestamps) is already a signal that lets the agent explore information in layers — known as progressive disclosure.\n\n\n\n\n\n\nTipAgentic search, not just embeddings\n\n\n\nGiving the agent tools to explore its environment on its own (glob, grep, reading files on demand) avoids the problems of a static index: stale indexes, outdated embeddings. The trade-off is speed — which is why many strong agents use a hybrid approach: preload some data for speed while retaining the ability to explore on their own.\n\n\n\n\n2. Compaction (Compress)\nCompaction = when the conversation gets close to the context window ceiling, summarize its contents and reinitialize a fresh context window with only that summary.\nThe art lies in choosing what to keep and what to drop:\n\nStart by maximizing recall — make sure the summarization prompt captures every relevant piece of information.\nThen iterate to increase precision — strip out the redundant parts.\n\nA safe move: once work is done, delete the raw tool calls and results, keeping only the core conclusions.\n\n\n3. Structured note-taking (Write)\nHave the agent write notes outside the context window on a regular basis, then retrieve them when needed. This is durable memory at very low cost: the agent tracks progress across complex tasks and retains important dependencies and context without bloating the window.\nAnthropic released a file-based memory tool that lets an agent build up a knowledge base over time, maintain project state across multiple sessions, and reference prior work.\n\n\n4. Sub-agent architectures (Isolate)\nDelegate focused tasks to specialized sub-agents, each working in its own clean context window and returning only a condensed summary (often just 1,000–2,000 tokens).\nThe benefit is separation of concerns: all the detailed, messy search context is isolated inside the sub-agent, while the coordinating lead agent only synthesizes the distilled results.\n\n\n\n\n\n\n\n\nG\n\n\n\nlead\n\nLead Agent\n(synthesis)\n\n\n\ns1\n\nSub-agent: Search\n\n\n\nlead-&gt;s1\n\n\ntask\n\n\n\ns2\n\nSub-agent: Analysis\n\n\n\nlead-&gt;s2\n\n\ntask\n\n\n\ns3\n\nSub-agent: Verification\n\n\n\nlead-&gt;s3\n\n\ntask\n\n\n\ns1-&gt;lead\n\n\nsummary ~1-2k tokens\n\n\n\ns2-&gt;lead\n\n\nsummary\n\n\n\ns3-&gt;lead\n\n\nsummary\n\n\n\n\n\n\nFigure 1: A lead agent orchestrating sub-agents with separate context windows."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#a-practical-checklist",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#a-practical-checklist",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "A practical checklist",
+    "text": "A practical checklist\nWhen your agent “behaves strangely,” check the context before blaming the model:\n\nIs the system prompt at the right altitude, or is it too rigid / too vague?\nAre there any redundant, overlapping tools or ones that create ambiguous choices?\nAre you stuffing in too many edge cases instead of a few canonical examples?\nDoes the context contain old history, wrong documents, or tool results that are no longer useful?\nFor long tasks: do you have a compaction / note-taking / sub-agent mechanism in place?\nAre you preloading unnecessary data instead of doing it just-in-time?"
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#closing",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#closing",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "Closing",
+    "text": "Closing\nThe long-term trend is fairly clear: as models get stronger, agent design shifts toward letting smart models act smartly on their own, with ever less manual human intervention. But no matter how capable models become, context remains a finite resource, and distilling it deliberately will stay a core skill for building reliable agents.\nThe mindset to remember, in one sentence: find the smallest, highest-signal set of tokens for each step the agent takes.\n\nReferences:\n\nAnthropic — Effective context engineering for AI agents\nLangChain — Context Engineering for Agents (the Write / Select / Compress / Isolate framework)"
   }
 ]

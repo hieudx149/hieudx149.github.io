@@ -1,1 +1,39 @@
 /* css styles */
+
+/* Language switcher at the top of bilingual posts */
+.lang-switch {
+  margin-bottom: 1.5rem;
+}
+
+.lang-switch p {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Clickable language (the other language) renders as a link */
+.lang-switch a {
+  text-decoration: none;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  color: #2780e3;
+}
+
+.lang-switch a:hover {
+  background-color: #e7f1ff;
+  text-decoration: none;
+}
+
+/* Current language renders as bold + highlighted pill */
+.lang-switch strong {
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background-color: #2780e3;
+  color: #fff;
+  font-weight: 600;
+}

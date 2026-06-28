@@ -1,0 +1,179 @@
+---
+title: "Context Engineering for AI Agents: The Art of Managing a Model's 'Memory'"
+author: "Hieu Duong"
+date: "2026-06-28"
+categories: [ai-agents, llm, context-engineering, english]
+description: "Why context — not just the prompt — is what determines an AI agent's reliability, and the practical techniques for managing it well."
+toc: true
+toc-depth: 3
+---
+
+::: {.lang-switch}
+🌐 [Tiếng Việt](index.html) · **English**
+:::
+
+> *"Context engineering has become the number one job of engineers building AI agents."* — an observation from the Cognition team, mid-2025.
+
+If you've ever built an AI agent that worked great in a demo but became "forgetful," went off track, or grew unreliable over a long real-world run, the problem is probably not in your prompt. It's in **everything else** the model reads: conversation history, tool results, loaded documents, old notes... Managing that whole set well is what we call **context engineering**.
+
+This post pulls together the mindset and the practical techniques around the topic — mostly based on Anthropic's [*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), combined with LangChain's familiar taxonomy.
+
+## From prompt engineering to context engineering
+
+**Prompt engineering** is writing and arranging instructions for the model — optimizing for a discrete, single-shot task.
+
+**Context engineering** is its natural evolution: instead of only worrying about the prompt, you manage the **entire set of tokens** fed to the model at each inference step, and you do it **repeatedly** across the agent's lifecycle.
+
+::: {.callout-note}
+## A short definition
+
+**Context** is the set of tokens included when sampling from an LLM. **Context engineering** is the problem of optimizing the *usefulness* of that token set against the LLM's inherent constraints, in order to reliably achieve the desired outcome.
+:::
+
+The core difference: a prompt is something static you write once; context is **dynamic** — it grows and shifts with every turn the agent takes. For a chatbot answering one question, prompt engineering is enough. For an agent running dozens or hundreds of tool calls, you're forced to *orchestrate* context.
+
+## Context is a finite resource
+
+The most common wrong intuition: "the bigger the context window, the better — just stuff everything in." The reality is the opposite.
+
+### Context rot
+
+Research points to a phenomenon called **context rot**: as the context window gets longer, the model's accuracy at recalling information **degrades**. The model can still "read" everything, but its precision in retrieving a specific detail drops.
+
+### The attention budget
+
+Just as humans have a limited working memory, an LLM has a finite **"attention budget"** that is depleted with every new token. The cause lies in the transformer architecture: each token must "attend" to every other token, creating **n² pairwise relationships** for n tokens. The longer the context, the more thinly that attention is spread.
+
+::: {.callout-important}
+## The principle running through all of this
+
+The goal of context engineering is to find the **smallest set of high-signal-density tokens** that maximizes the likelihood of the desired outcome. Context is a *precious and finite* resource — spend it frugally.
+:::
+
+## The anatomy of good context
+
+A well-constructed context usually consists of deliberately ordered components: **system prompt → relevant memory/notes → tool definitions → examples → conversation history**. Their quality and ordering drive performance more than any single other factor.
+
+### System prompt: finding the right "altitude"
+
+System prompts tend to fall into two extremes:
+
+- **Too rigid:** hardcoding complex, brittle logic that breaks on novel situations.
+- **Too vague:** giving only generic guidance, assuming the model understands context it actually lacks.
+
+The Goldilocks zone sits at **the right altitude**: specific enough to steer behavior, yet flexible enough to let the model reason with strong heuristics.
+
+Practical tips:
+
+- Split the prompt into clear sections using **XML tags** or **Markdown headings**.
+- Aim for the *minimal set of information* that fully describes the expected behavior.
+- Start with a minimal prompt on a strong model, then **add instructions and examples** based on failures observed in practice.
+
+### Tools: the contract between the agent and the world
+
+A tool defines the "contract" between the agent and its space of information and actions. Good tools:
+
+- Return information that is **token-efficient**.
+- Are **self-contained** and clear about their intended use.
+- Avoid a **bloated** toolset or **ambiguous decision points** that leave the agent unsure which tool to pick.
+
+### Examples: a picture is worth a thousand words
+
+Don't stuff the prompt with a long list of edge cases. Instead, pick a few **canonical, diverse examples** that demonstrate the desired behavior. For an LLM, an example really is worth a thousand words.
+
+## A mental model: Write / Select / Compress / Isolate
+
+LangChain (Lance Martin) organizes context engineering strategies into four groups. It's a compact framework worth remembering:
+
+| Strategy | Meaning | Example techniques |
+| -------- | ------- | ------------------ |
+| **Write** | Store context *outside* the context window for reuse | Scratchpad, structured notes, memory tool |
+| **Select** | Pull the *right* context into the window when needed | Just-in-time retrieval, agentic search (glob/grep) |
+| **Compress** | Keep only the tokens that are truly needed | Compaction, summarization, pruning processed tool results |
+| **Isolate** | Split context so the pieces don't interfere | Sub-agent architectures, a separate context window per task |
+
+The four techniques in the next section all map onto this framework.
+
+## Techniques for long-horizon tasks
+
+When an agent runs for a long time — browsing code, doing multi-step research, handling multi-stage workflows — context accumulates fast enough to hit the window ceiling. This is where dedicated techniques are needed.
+
+### 1. Just-in-time retrieval (Select)
+
+Instead of preloading *all* the data into context up front, the agent keeps only **lightweight identifiers** (file paths, saved queries, web links...) and **loads context at runtime** when it's actually needed.
+
+This mirrors how people work: we don't memorize an entire library — we use external systems for organization and indexing. The metadata itself (folder structure, naming conventions, timestamps) is already a signal that lets the agent explore information **in layers** — known as *progressive disclosure*.
+
+::: {.callout-tip}
+## Agentic search, not just embeddings
+
+Giving the agent tools to explore its environment on its own (`glob`, `grep`, reading files on demand) avoids the problems of a static index: stale indexes, outdated embeddings. The trade-off is speed — which is why many strong agents use a **hybrid** approach: preload some data for speed while retaining the ability to explore on their own.
+:::
+
+### 2. Compaction (Compress)
+
+**Compaction** = when the conversation gets close to the context window ceiling, **summarize** its contents and reinitialize a fresh context window with only that summary.
+
+The art lies in choosing *what to keep and what to drop*:
+
+1. Start by **maximizing recall** — make sure the summarization prompt captures every relevant piece of information.
+2. Then **iterate to increase precision** — strip out the redundant parts.
+
+A safe move: once work is done, **delete the raw tool calls and results**, keeping only the core conclusions.
+
+### 3. Structured note-taking (Write)
+
+Have the agent **write notes outside the context window** on a regular basis, then retrieve them when needed. This is durable memory at very low cost: the agent tracks progress across complex tasks and retains important dependencies and context without bloating the window.
+
+Anthropic released a file-based **memory tool** that lets an agent build up a knowledge base over time, maintain project state across multiple sessions, and reference prior work.
+
+### 4. Sub-agent architectures (Isolate)
+
+Delegate focused tasks to **specialized sub-agents**, each working in its own **clean context window** and returning only a **condensed summary** (often just 1,000–2,000 tokens).
+
+The benefit is **separation of concerns**: all the detailed, messy search context is isolated inside the sub-agent, while the coordinating lead agent only synthesizes the distilled results.
+
+```{dot}
+//| label: fig-subagent
+//| fig-cap: "A lead agent orchestrating sub-agents with separate context windows."
+digraph G {
+  rankdir=TB;
+  node [shape=box, style=rounded, fontname="Helvetica"];
+
+  lead [label="Lead Agent\n(synthesis)"];
+  s1 [label="Sub-agent: Search"];
+  s2 [label="Sub-agent: Analysis"];
+  s3 [label="Sub-agent: Verification"];
+
+  lead -> s1 [label="task"];
+  lead -> s2 [label="task"];
+  lead -> s3 [label="task"];
+  s1 -> lead [label="summary ~1-2k tokens", style=dashed];
+  s2 -> lead [label="summary", style=dashed];
+  s3 -> lead [label="summary", style=dashed];
+}
+```
+
+## A practical checklist
+
+When your agent "behaves strangely," check the context before blaming the model:
+
+- [ ] Is the system prompt at **the right altitude**, or is it too rigid / too vague?
+- [ ] Are there any **redundant, overlapping** tools or ones that create ambiguous choices?
+- [ ] Are you stuffing in too many **edge cases** instead of a few canonical examples?
+- [ ] Does the context contain **old history, wrong documents, or tool results that are no longer useful**?
+- [ ] For long tasks: do you have a **compaction / note-taking / sub-agent** mechanism in place?
+- [ ] Are you preloading unnecessary data instead of doing it **just-in-time**?
+
+## Closing
+
+The long-term trend is fairly clear: as models get stronger, agent design shifts toward **letting smart models act smartly on their own**, with ever less manual human intervention. But no matter how capable models become, context remains a finite resource, and **distilling it deliberately** will stay a core skill for building reliable agents.
+
+The mindset to remember, in one sentence: *find the smallest, highest-signal set of tokens for each step the agent takes.*
+
+---
+
+**References:**
+
+- Anthropic — [*Effective context engineering for AI agents*](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- LangChain — [*Context Engineering for Agents*](https://blog.langchain.com/context-engineering-for-agents/) (the Write / Select / Compress / Isolate framework)

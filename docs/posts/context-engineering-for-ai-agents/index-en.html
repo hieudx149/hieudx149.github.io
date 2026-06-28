@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Hieu Duong">
+<meta name="dcterms.date" content="2026-06-28">
+<meta name="description" content="Why context — not just the prompt — is what determines an AI agent’s reliability, and the practical techniques for managing it well.">
+
+<title>Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’ – Hieu Duong</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-35155b22413c9ef7a79a96887d465071.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Hieu Duong</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html"> 
+<span class="menu-text">Posts</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../files/Hieu_Duong_CV.pdf" target="_blank"> <i class="bi bi-file-earmark-pdf" role="img">
+</i> 
+<span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/hieudx149"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/hieu-duong-b55018165/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.facebook.com/xhd99"> <i class="bi bi-facebook" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#from-prompt-engineering-to-context-engineering" id="toc-from-prompt-engineering-to-context-engineering" class="nav-link active" data-scroll-target="#from-prompt-engineering-to-context-engineering">From prompt engineering to context engineering</a></li>
+  <li><a href="#context-is-a-finite-resource" id="toc-context-is-a-finite-resource" class="nav-link" data-scroll-target="#context-is-a-finite-resource">Context is a finite resource</a>
+  <ul class="collapse">
+  <li><a href="#context-rot" id="toc-context-rot" class="nav-link" data-scroll-target="#context-rot">Context rot</a></li>
+  <li><a href="#the-attention-budget" id="toc-the-attention-budget" class="nav-link" data-scroll-target="#the-attention-budget">The attention budget</a></li>
+  </ul></li>
+  <li><a href="#the-anatomy-of-good-context" id="toc-the-anatomy-of-good-context" class="nav-link" data-scroll-target="#the-anatomy-of-good-context">The anatomy of good context</a>
+  <ul class="collapse">
+  <li><a href="#system-prompt-finding-the-right-altitude" id="toc-system-prompt-finding-the-right-altitude" class="nav-link" data-scroll-target="#system-prompt-finding-the-right-altitude">System prompt: finding the right “altitude”</a></li>
+  <li><a href="#tools-the-contract-between-the-agent-and-the-world" id="toc-tools-the-contract-between-the-agent-and-the-world" class="nav-link" data-scroll-target="#tools-the-contract-between-the-agent-and-the-world">Tools: the contract between the agent and the world</a></li>
+  <li><a href="#examples-a-picture-is-worth-a-thousand-words" id="toc-examples-a-picture-is-worth-a-thousand-words" class="nav-link" data-scroll-target="#examples-a-picture-is-worth-a-thousand-words">Examples: a picture is worth a thousand words</a></li>
+  </ul></li>
+  <li><a href="#a-mental-model-write-select-compress-isolate" id="toc-a-mental-model-write-select-compress-isolate" class="nav-link" data-scroll-target="#a-mental-model-write-select-compress-isolate">A mental model: Write / Select / Compress / Isolate</a></li>
+  <li><a href="#techniques-for-long-horizon-tasks" id="toc-techniques-for-long-horizon-tasks" class="nav-link" data-scroll-target="#techniques-for-long-horizon-tasks">Techniques for long-horizon tasks</a>
+  <ul class="collapse">
+  <li><a href="#just-in-time-retrieval-select" id="toc-just-in-time-retrieval-select" class="nav-link" data-scroll-target="#just-in-time-retrieval-select">1. Just-in-time retrieval (Select)</a></li>
+  <li><a href="#compaction-compress" id="toc-compaction-compress" class="nav-link" data-scroll-target="#compaction-compress">2. Compaction (Compress)</a></li>
+  <li><a href="#structured-note-taking-write" id="toc-structured-note-taking-write" class="nav-link" data-scroll-target="#structured-note-taking-write">3. Structured note-taking (Write)</a></li>
+  <li><a href="#sub-agent-architectures-isolate" id="toc-sub-agent-architectures-isolate" class="nav-link" data-scroll-target="#sub-agent-architectures-isolate">4. Sub-agent architectures (Isolate)</a></li>
+  </ul></li>
+  <li><a href="#a-practical-checklist" id="toc-a-practical-checklist" class="nav-link" data-scroll-target="#a-practical-checklist">A practical checklist</a></li>
+  <li><a href="#closing" id="toc-closing" class="nav-link" data-scroll-target="#closing">Closing</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">ai-agents</div>
+    <div class="quarto-category">llm</div>
+    <div class="quarto-category">context-engineering</div>
+    <div class="quarto-category">english</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Why context — not just the prompt — is what determines an AI agent’s reliability, and the practical techniques for managing it well.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Hieu Duong </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 28, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="lang-switch">
+<p>🌐 <a href="index.html">Tiếng Việt</a> · <strong>English</strong></p>
+</div>
+<blockquote class="blockquote">
+<p><em>“Context engineering has become the number one job of engineers building AI agents.”</em> — an observation from the Cognition team, mid-2025.</p>
+</blockquote>
+<p>If you’ve ever built an AI agent that worked great in a demo but became “forgetful,” went off track, or grew unreliable over a long real-world run, the problem is probably not in your prompt. It’s in <strong>everything else</strong> the model reads: conversation history, tool results, loaded documents, old notes… Managing that whole set well is what we call <strong>context engineering</strong>.</p>
+<p>This post pulls together the mindset and the practical techniques around the topic — mostly based on Anthropic’s <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><em>Effective context engineering for AI agents</em></a>, combined with LangChain’s familiar taxonomy.</p>
+<section id="from-prompt-engineering-to-context-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="from-prompt-engineering-to-context-engineering">From prompt engineering to context engineering</h2>
+<p><strong>Prompt engineering</strong> is writing and arranging instructions for the model — optimizing for a discrete, single-shot task.</p>
+<p><strong>Context engineering</strong> is its natural evolution: instead of only worrying about the prompt, you manage the <strong>entire set of tokens</strong> fed to the model at each inference step, and you do it <strong>repeatedly</strong> across the agent’s lifecycle.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A short definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Context</strong> is the set of tokens included when sampling from an LLM. <strong>Context engineering</strong> is the problem of optimizing the <em>usefulness</em> of that token set against the LLM’s inherent constraints, in order to reliably achieve the desired outcome.</p>
+</div>
+</div>
+<p>The core difference: a prompt is something static you write once; context is <strong>dynamic</strong> — it grows and shifts with every turn the agent takes. For a chatbot answering one question, prompt engineering is enough. For an agent running dozens or hundreds of tool calls, you’re forced to <em>orchestrate</em> context.</p>
+</section>
+<section id="context-is-a-finite-resource" class="level2">
+<h2 class="anchored" data-anchor-id="context-is-a-finite-resource">Context is a finite resource</h2>
+<p>The most common wrong intuition: “the bigger the context window, the better — just stuff everything in.” The reality is the opposite.</p>
+<section id="context-rot" class="level3">
+<h3 class="anchored" data-anchor-id="context-rot">Context rot</h3>
+<p>Research points to a phenomenon called <strong>context rot</strong>: as the context window gets longer, the model’s accuracy at recalling information <strong>degrades</strong>. The model can still “read” everything, but its precision in retrieving a specific detail drops.</p>
+</section>
+<section id="the-attention-budget" class="level3">
+<h3 class="anchored" data-anchor-id="the-attention-budget">The attention budget</h3>
+<p>Just as humans have a limited working memory, an LLM has a finite <strong>“attention budget”</strong> that is depleted with every new token. The cause lies in the transformer architecture: each token must “attend” to every other token, creating <strong>n² pairwise relationships</strong> for n tokens. The longer the context, the more thinly that attention is spread.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The principle running through all of this
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The goal of context engineering is to find the <strong>smallest set of high-signal-density tokens</strong> that maximizes the likelihood of the desired outcome. Context is a <em>precious and finite</em> resource — spend it frugally.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-anatomy-of-good-context" class="level2">
+<h2 class="anchored" data-anchor-id="the-anatomy-of-good-context">The anatomy of good context</h2>
+<p>A well-constructed context usually consists of deliberately ordered components: <strong>system prompt → relevant memory/notes → tool definitions → examples → conversation history</strong>. Their quality and ordering drive performance more than any single other factor.</p>
+<section id="system-prompt-finding-the-right-altitude" class="level3">
+<h3 class="anchored" data-anchor-id="system-prompt-finding-the-right-altitude">System prompt: finding the right “altitude”</h3>
+<p>System prompts tend to fall into two extremes:</p>
+<ul>
+<li><strong>Too rigid:</strong> hardcoding complex, brittle logic that breaks on novel situations.</li>
+<li><strong>Too vague:</strong> giving only generic guidance, assuming the model understands context it actually lacks.</li>
+</ul>
+<p>The Goldilocks zone sits at <strong>the right altitude</strong>: specific enough to steer behavior, yet flexible enough to let the model reason with strong heuristics.</p>
+<p>Practical tips:</p>
+<ul>
+<li>Split the prompt into clear sections using <strong>XML tags</strong> or <strong>Markdown headings</strong>.</li>
+<li>Aim for the <em>minimal set of information</em> that fully describes the expected behavior.</li>
+<li>Start with a minimal prompt on a strong model, then <strong>add instructions and examples</strong> based on failures observed in practice.</li>
+</ul>
+</section>
+<section id="tools-the-contract-between-the-agent-and-the-world" class="level3">
+<h3 class="anchored" data-anchor-id="tools-the-contract-between-the-agent-and-the-world">Tools: the contract between the agent and the world</h3>
+<p>A tool defines the “contract” between the agent and its space of information and actions. Good tools:</p>
+<ul>
+<li>Return information that is <strong>token-efficient</strong>.</li>
+<li>Are <strong>self-contained</strong> and clear about their intended use.</li>
+<li>Avoid a <strong>bloated</strong> toolset or <strong>ambiguous decision points</strong> that leave the agent unsure which tool to pick.</li>
+</ul>
+</section>
+<section id="examples-a-picture-is-worth-a-thousand-words" class="level3">
+<h3 class="anchored" data-anchor-id="examples-a-picture-is-worth-a-thousand-words">Examples: a picture is worth a thousand words</h3>
+<p>Don’t stuff the prompt with a long list of edge cases. Instead, pick a few <strong>canonical, diverse examples</strong> that demonstrate the desired behavior. For an LLM, an example really is worth a thousand words.</p>
+</section>
+</section>
+<section id="a-mental-model-write-select-compress-isolate" class="level2">
+<h2 class="anchored" data-anchor-id="a-mental-model-write-select-compress-isolate">A mental model: Write / Select / Compress / Isolate</h2>
+<p>LangChain (Lance Martin) organizes context engineering strategies into four groups. It’s a compact framework worth remembering:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 21%">
+<col style="width: 54%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Strategy</th>
+<th>Meaning</th>
+<th>Example techniques</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Write</strong></td>
+<td>Store context <em>outside</em> the context window for reuse</td>
+<td>Scratchpad, structured notes, memory tool</td>
+</tr>
+<tr class="even">
+<td><strong>Select</strong></td>
+<td>Pull the <em>right</em> context into the window when needed</td>
+<td>Just-in-time retrieval, agentic search (glob/grep)</td>
+</tr>
+<tr class="odd">
+<td><strong>Compress</strong></td>
+<td>Keep only the tokens that are truly needed</td>
+<td>Compaction, summarization, pruning processed tool results</td>
+</tr>
+<tr class="even">
+<td><strong>Isolate</strong></td>
+<td>Split context so the pieces don’t interfere</td>
+<td>Sub-agent architectures, a separate context window per task</td>
+</tr>
+</tbody>
+</table>
+<p>The four techniques in the next section all map onto this framework.</p>
+</section>
+<section id="techniques-for-long-horizon-tasks" class="level2">
+<h2 class="anchored" data-anchor-id="techniques-for-long-horizon-tasks">Techniques for long-horizon tasks</h2>
+<p>When an agent runs for a long time — browsing code, doing multi-step research, handling multi-stage workflows — context accumulates fast enough to hit the window ceiling. This is where dedicated techniques are needed.</p>
+<section id="just-in-time-retrieval-select" class="level3">
+<h3 class="anchored" data-anchor-id="just-in-time-retrieval-select">1. Just-in-time retrieval (Select)</h3>
+<p>Instead of preloading <em>all</em> the data into context up front, the agent keeps only <strong>lightweight identifiers</strong> (file paths, saved queries, web links…) and <strong>loads context at runtime</strong> when it’s actually needed.</p>
+<p>This mirrors how people work: we don’t memorize an entire library — we use external systems for organization and indexing. The metadata itself (folder structure, naming conventions, timestamps) is already a signal that lets the agent explore information <strong>in layers</strong> — known as <em>progressive disclosure</em>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Agentic search, not just embeddings
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Giving the agent tools to explore its environment on its own (<code>glob</code>, <code>grep</code>, reading files on demand) avoids the problems of a static index: stale indexes, outdated embeddings. The trade-off is speed — which is why many strong agents use a <strong>hybrid</strong> approach: preload some data for speed while retaining the ability to explore on their own.</p>
+</div>
+</div>
+</section>
+<section id="compaction-compress" class="level3">
+<h3 class="anchored" data-anchor-id="compaction-compress">2. Compaction (Compress)</h3>
+<p><strong>Compaction</strong> = when the conversation gets close to the context window ceiling, <strong>summarize</strong> its contents and reinitialize a fresh context window with only that summary.</p>
+<p>The art lies in choosing <em>what to keep and what to drop</em>:</p>
+<ol type="1">
+<li>Start by <strong>maximizing recall</strong> — make sure the summarization prompt captures every relevant piece of information.</li>
+<li>Then <strong>iterate to increase precision</strong> — strip out the redundant parts.</li>
+</ol>
+<p>A safe move: once work is done, <strong>delete the raw tool calls and results</strong>, keeping only the core conclusions.</p>
+</section>
+<section id="structured-note-taking-write" class="level3">
+<h3 class="anchored" data-anchor-id="structured-note-taking-write">3. Structured note-taking (Write)</h3>
+<p>Have the agent <strong>write notes outside the context window</strong> on a regular basis, then retrieve them when needed. This is durable memory at very low cost: the agent tracks progress across complex tasks and retains important dependencies and context without bloating the window.</p>
+<p>Anthropic released a file-based <strong>memory tool</strong> that lets an agent build up a knowledge base over time, maintain project state across multiple sessions, and reference prior work.</p>
+</section>
+<section id="sub-agent-architectures-isolate" class="level3">
+<h3 class="anchored" data-anchor-id="sub-agent-architectures-isolate">4. Sub-agent architectures (Isolate)</h3>
+<p>Delegate focused tasks to <strong>specialized sub-agents</strong>, each working in its own <strong>clean context window</strong> and returning only a <strong>condensed summary</strong> (often just 1,000–2,000 tokens).</p>
+<p>The benefit is <strong>separation of concerns</strong>: all the detailed, messy search context is isolated inside the sub-agent, while the coordinating lead agent only synthesizes the distilled results.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-subagent" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-subagent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 496.19 138.40" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 134.4)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-134.4 492.19,-134.4 492.19,4 -4,4"></polygon>
+<!-- lead -->
+<g id="node1" class="node">
+<title>lead</title>
+<path fill="none" stroke="black" d="M296.99,-130.2C296.99,-130.2 233.75,-130.2 233.75,-130.2 227.75,-130.2 221.75,-124.2 221.75,-118.2 221.75,-118.2 221.75,-101 221.75,-101 221.75,-95 227.75,-89 233.75,-89 233.75,-89 296.99,-89 296.99,-89 302.99,-89 308.99,-95 308.99,-101 308.99,-101 308.99,-118.2 308.99,-118.2 308.99,-124.2 302.99,-130.2 296.99,-130.2"></path>
+<text text-anchor="middle" x="265.37" y="-113.8" font-family="Helvetica,sans-Serif" font-size="14.00">Lead Agent</text>
+<text text-anchor="middle" x="265.37" y="-97" font-family="Helvetica,sans-Serif" font-size="14.00">(synthesis)</text>
+</g>
+<!-- s1 -->
+<g id="node2" class="node">
+<title>s1</title>
+<path fill="none" stroke="black" d="M120.62,-36C120.62,-36 12.13,-36 12.13,-36 6.13,-36 0.13,-30 0.13,-24 0.13,-24 0.13,-12 0.13,-12 0.13,-6 6.13,0 12.13,0 12.13,0 120.62,0 120.62,0 126.62,0 132.62,-6 132.62,-12 132.62,-12 132.62,-24 132.62,-24 132.62,-30 126.62,-36 120.62,-36"></path>
+<text text-anchor="middle" x="66.37" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">Sub-agent: Search</text>
+</g>
+<!-- lead&#45;&gt;s1 -->
+<g id="edge1" class="edge">
+<title>lead-&gt;s1</title>
+<path fill="none" stroke="black" d="M221.37,-107.48C163.84,-104.98 67.81,-96.9 45.82,-70.8 39.56,-63.36 41.38,-53.78 45.9,-44.89"></path>
+<polygon fill="black" stroke="black" points="48.9,-46.68 51.13,-36.33 42.93,-43.04 48.9,-46.68"></polygon>
+<text text-anchor="middle" x="57.65" y="-58.2" font-family="Times,serif" font-size="14.00">task</text>
+</g>
+<!-- s2 -->
+<g id="node3" class="node">
+<title>s2</title>
+<path fill="none" stroke="black" d="M300.39,-36C300.39,-36 184.35,-36 184.35,-36 178.35,-36 172.35,-30 172.35,-24 172.35,-24 172.35,-12 172.35,-12 172.35,-6 178.35,0 184.35,0 184.35,0 300.39,0 300.39,0 306.39,0 312.39,-6 312.39,-12 312.39,-12 312.39,-24 312.39,-24 312.39,-30 306.39,-36 300.39,-36"></path>
+<text text-anchor="middle" x="242.37" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">Sub-agent: Analysis</text>
+</g>
+<!-- lead&#45;&gt;s2 -->
+<g id="edge2" class="edge">
+<title>lead-&gt;s2</title>
+<path fill="none" stroke="black" d="M251.58,-88.61C248.44,-83.08 245.53,-76.91 243.82,-70.8 241.63,-62.97 240.8,-54.21 240.65,-46.16"></path>
+<polygon fill="black" stroke="black" points="244.15,-46.15 240.79,-36.11 237.15,-46.06 244.15,-46.15"></polygon>
+<text text-anchor="middle" x="255.65" y="-58.2" font-family="Times,serif" font-size="14.00">task</text>
+</g>
+<!-- s3 -->
+<g id="node4" class="node">
+<title>s3</title>
+<path fill="none" stroke="black" d="M476.01,-36C476.01,-36 342.73,-36 342.73,-36 336.73,-36 330.73,-30 330.73,-24 330.73,-24 330.73,-12 330.73,-12 330.73,-6 336.73,0 342.73,0 342.73,0 476.01,0 476.01,0 482.01,0 488.01,-6 488.01,-12 488.01,-12 488.01,-24 488.01,-24 488.01,-30 482.01,-36 476.01,-36"></path>
+<text text-anchor="middle" x="409.37" y="-13.8" font-family="Helvetica,sans-Serif" font-size="14.00">Sub-agent: Verification</text>
+</g>
+<!-- lead&#45;&gt;s3 -->
+<g id="edge3" class="edge">
+<title>lead-&gt;s3</title>
+<path fill="none" stroke="black" d="M296.97,-88.94C319.44,-74.96 349.66,-56.15 373.11,-41.57"></path>
+<polygon fill="black" stroke="black" points="375.09,-44.45 381.73,-36.2 371.39,-38.51 375.09,-44.45"></polygon>
+<text text-anchor="middle" x="361.65" y="-58.2" font-family="Times,serif" font-size="14.00">task</text>
+</g>
+<!-- s1&#45;&gt;lead -->
+<g id="edge4" class="edge">
+<title>s1-&gt;lead</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M76.34,-36.44C83.77,-47.89 94.95,-62.27 108.48,-70.8 139.39,-90.28 179.51,-99.72 211.44,-104.3"></path>
+<polygon fill="black" stroke="black" points="211.13,-107.79 221.5,-105.62 212.04,-100.85 211.13,-107.79"></polygon>
+<text text-anchor="middle" x="173.82" y="-58.2" font-family="Times,serif" font-size="14.00">summary ~1-2k tokens</text>
+</g>
+<!-- s2&#45;&gt;lead -->
+<g id="edge5" class="edge">
+<title>s2-&gt;lead</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M257.08,-36.07C260.86,-41.46 264.41,-47.67 266.37,-54 268.82,-61.9 269.48,-70.75 269.3,-78.99"></path>
+<polygon fill="black" stroke="black" points="265.8,-78.78 268.67,-88.98 272.79,-79.21 265.8,-78.78"></polygon>
+<text text-anchor="middle" x="295.42" y="-58.2" font-family="Times,serif" font-size="14.00">summary</text>
+</g>
+<!-- s3&#45;&gt;lead -->
+<g id="edge6" class="edge">
+<title>s3-&gt;lead</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M402.52,-36.09C397.2,-47.38 388.79,-61.72 377.37,-70.8 360.6,-84.12 338.89,-92.87 319.06,-98.55"></path>
+<polygon fill="black" stroke="black" points="317.96,-95.22 309.19,-101.18 319.76,-101.98 317.96,-95.22"></polygon>
+<text text-anchor="middle" x="418.42" y="-58.2" font-family="Times,serif" font-size="14.00">summary</text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-subagent-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A lead agent orchestrating sub-agents with separate context windows.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="a-practical-checklist" class="level2">
+<h2 class="anchored" data-anchor-id="a-practical-checklist">A practical checklist</h2>
+<p>When your agent “behaves strangely,” check the context before blaming the model:</p>
+<ul class="task-list">
+<li><label><input type="checkbox">Is the system prompt at <strong>the right altitude</strong>, or is it too rigid / too vague?</label></li>
+<li><label><input type="checkbox">Are there any <strong>redundant, overlapping</strong> tools or ones that create ambiguous choices?</label></li>
+<li><label><input type="checkbox">Are you stuffing in too many <strong>edge cases</strong> instead of a few canonical examples?</label></li>
+<li><label><input type="checkbox">Does the context contain <strong>old history, wrong documents, or tool results that are no longer useful</strong>?</label></li>
+<li><label><input type="checkbox">For long tasks: do you have a <strong>compaction / note-taking / sub-agent</strong> mechanism in place?</label></li>
+<li><label><input type="checkbox">Are you preloading unnecessary data instead of doing it <strong>just-in-time</strong>?</label></li>
+</ul>
+</section>
+<section id="closing" class="level2">
+<h2 class="anchored" data-anchor-id="closing">Closing</h2>
+<p>The long-term trend is fairly clear: as models get stronger, agent design shifts toward <strong>letting smart models act smartly on their own</strong>, with ever less manual human intervention. But no matter how capable models become, context remains a finite resource, and <strong>distilling it deliberately</strong> will stay a core skill for building reliable agents.</p>
+<p>The mindset to remember, in one sentence: <em>find the smallest, highest-signal set of tokens for each step the agent takes.</em></p>
+<hr>
+<p><strong>References:</strong></p>
+<ul>
+<li>Anthropic — <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"><em>Effective context engineering for AI agents</em></a></li>
+<li>LangChain — <a href="https://blog.langchain.com/context-engineering-for-agents/"><em>Context Engineering for Agents</em></a> (the Write / Select / Compress / Isolate framework)</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
