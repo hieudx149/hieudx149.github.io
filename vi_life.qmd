@@ -1,0 +1,13 @@
+---
+title: "Cuộc sống"
+---
+
+::: {.lang-switch}
+🌐 **Tiếng Việt** · [English](life.html)
+:::
+
+::: {.coming-soon}
+## Sắp ra mắt
+
+Những ghi chép, hình ảnh và suy ngẫm về cuộc sống ngoài công việc — sẽ sớm cập nhật.
+:::

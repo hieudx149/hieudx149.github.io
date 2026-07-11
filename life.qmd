@@ -1,0 +1,13 @@
+---
+title: "Life"
+---
+
+::: {.lang-switch}
+🌐 [Tiếng Việt](vi_life.html) · **English**
+:::
+
+::: {.coming-soon}
+## Coming soon
+
+Notes, photos, and reflections on life beyond work — on the way.
+:::

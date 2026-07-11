@@ -8,26 +8,21 @@ project:
     - files/Hieu_Duong_CV.pdf
 website:
   title: "Hieu Duong"
+  favicon: favicon-arch.svg
   navbar:
     background: light
     right:
-      - icon: file-earmark-pdf
-        text: "CV"
-        href: files/Hieu_Duong_CV.pdf
-        target: _blank
-      - icon: github
-        href: https://github.com/hieudx149
-      - icon: linkedin
-        href: https://www.linkedin.com/in/hieu-duong-b55018165/
-      - icon: facebook
-        href: https://www.facebook.com/xhd99
-    left:
       - text: "Posts"
         file: posts.qmd
+      - text: "Life"
+        file: life.qmd
+      - text: "Books"
+        file: books.qmd
 format:
   html:
     theme: cosmo
     css: styles.css
+    toc-location: left
 
 
 

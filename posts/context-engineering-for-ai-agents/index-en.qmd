@@ -2,15 +2,11 @@
 title: "Context Engineering for AI Agents: The Art of Managing a Model's 'Memory'"
 author: "Hieu Duong"
 date: "2026-06-28"
-categories: [ai-agents, llm, context-engineering, english]
+categories: [ai-agents, llm, context-engineering]
 description: "Why context — not just the prompt — is what determines an AI agent's reliability, and the practical techniques for managing it well."
 toc: true
 toc-depth: 3
 ---
-
-::: {.lang-switch}
-🌐 [Tiếng Việt](index.html) · **English**
-:::
 
 > *"Context engineering has become the number one job of engineers building AI agents."* — an observation from the Cognition team, mid-2025.
 

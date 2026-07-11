@@ -1,8 +1,14 @@
 [
   {
-    "listing": "/posts.html",
+    "listing": "/vi_posts.html",
     "items": [
       "/posts/context-engineering-for-ai-agents/index.html"
+    ]
+  },
+  {
+    "listing": "/posts.html",
+    "items": [
+      "/posts/context-engineering-for-ai-agents/index-en.html"
     ]
   }
 ]

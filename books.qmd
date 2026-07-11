@@ -1,0 +1,13 @@
+---
+title: "Books"
+---
+
+::: {.lang-switch}
+🌐 [Tiếng Việt](vi_books.html) · **English**
+:::
+
+::: {.coming-soon}
+## Coming soon
+
+What I'm reading and what stuck with me — coming soon.
+:::

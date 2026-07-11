@@ -2,16 +2,12 @@
 title: "Context Engineering cho AI Agents: Nghệ thuật quản lý 'trí nhớ' của mô hình"
 author: "Hieu Duong"
 date: "2026-06-28"
-categories: [ai-agents, llm, context-engineering, tiếng-việt]
+categories: [ai-agents, llm, context-engineering]
 description: "Vì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả."
 toc: true
 toc-depth: 3
 toc-title: "Mục lục"
 ---
-
-::: {.lang-switch}
-🌐 **Tiếng Việt** · [English](index-en.html)
-:::
 
 > *"Context engineering đã trở thành công việc số 1 của kỹ sư xây dựng AI agent."* — quan sát của đội ngũ Cognition, giữa năm 2025.
 

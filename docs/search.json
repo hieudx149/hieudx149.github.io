@@ -1,10 +1,129 @@
 [
   {
+    "objectID": "vi_posts.html",
+    "href": "vi_posts.html",
+    "title": "Bài viết",
+    "section": "",
+    "text": "🌐 Tiếng Việt · English\n\n\n\n\n\n\n\n\n\n\nContext Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình\n\n\n\nai-agents\n\nllm\n\ncontext-engineering\n\n\n\nVì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả.\n\n\n\n\n\nJun 28, 2026\n\n\nHieu Duong\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "vi_books.html",
+    "href": "vi_books.html",
+    "title": "Sách",
+    "section": "",
+    "text": "🌐 Tiếng Việt · English"
+  },
+  {
+    "objectID": "vi_books.html#sắp-ra-mắt",
+    "href": "vi_books.html#sắp-ra-mắt",
+    "title": "Sách",
+    "section": "Sắp ra mắt",
+    "text": "Sắp ra mắt\nNhững cuốn tôi đang đọc và những điều đọng lại — sẽ sớm cập nhật."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "",
+    "text": "“Context engineering has become the number one job of engineers building AI agents.” — an observation from the Cognition team, mid-2025.\nIf you’ve ever built an AI agent that worked great in a demo but became “forgetful,” went off track, or grew unreliable over a long real-world run, the problem is probably not in your prompt. It’s in everything else the model reads: conversation history, tool results, loaded documents, old notes… Managing that whole set well is what we call context engineering.\nThis post pulls together the mindset and the practical techniques around the topic — mostly based on Anthropic’s Effective context engineering for AI agents, combined with LangChain’s familiar taxonomy."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#from-prompt-engineering-to-context-engineering",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#from-prompt-engineering-to-context-engineering",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "From prompt engineering to context engineering",
+    "text": "From prompt engineering to context engineering\nPrompt engineering is writing and arranging instructions for the model — optimizing for a discrete, single-shot task.\nContext engineering is its natural evolution: instead of only worrying about the prompt, you manage the entire set of tokens fed to the model at each inference step, and you do it repeatedly across the agent’s lifecycle.\n\n\n\n\n\n\nNoteA short definition\n\n\n\nContext is the set of tokens included when sampling from an LLM. Context engineering is the problem of optimizing the usefulness of that token set against the LLM’s inherent constraints, in order to reliably achieve the desired outcome.\n\n\nThe core difference: a prompt is something static you write once; context is dynamic — it grows and shifts with every turn the agent takes. For a chatbot answering one question, prompt engineering is enough. For an agent running dozens or hundreds of tool calls, you’re forced to orchestrate context."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#context-is-a-finite-resource",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#context-is-a-finite-resource",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "Context is a finite resource",
+    "text": "Context is a finite resource\nThe most common wrong intuition: “the bigger the context window, the better — just stuff everything in.” The reality is the opposite.\n\nContext rot\nResearch points to a phenomenon called context rot: as the context window gets longer, the model’s accuracy at recalling information degrades. The model can still “read” everything, but its precision in retrieving a specific detail drops.\n\n\nThe attention budget\nJust as humans have a limited working memory, an LLM has a finite “attention budget” that is depleted with every new token. The cause lies in the transformer architecture: each token must “attend” to every other token, creating n² pairwise relationships for n tokens. The longer the context, the more thinly that attention is spread.\n\n\n\n\n\n\nImportantThe principle running through all of this\n\n\n\nThe goal of context engineering is to find the smallest set of high-signal-density tokens that maximizes the likelihood of the desired outcome. Context is a precious and finite resource — spend it frugally."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#the-anatomy-of-good-context",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#the-anatomy-of-good-context",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "The anatomy of good context",
+    "text": "The anatomy of good context\nA well-constructed context usually consists of deliberately ordered components: system prompt → relevant memory/notes → tool definitions → examples → conversation history. Their quality and ordering drive performance more than any single other factor.\n\nSystem prompt: finding the right “altitude”\nSystem prompts tend to fall into two extremes:\n\nToo rigid: hardcoding complex, brittle logic that breaks on novel situations.\nToo vague: giving only generic guidance, assuming the model understands context it actually lacks.\n\nThe Goldilocks zone sits at the right altitude: specific enough to steer behavior, yet flexible enough to let the model reason with strong heuristics.\nPractical tips:\n\nSplit the prompt into clear sections using XML tags or Markdown headings.\nAim for the minimal set of information that fully describes the expected behavior.\nStart with a minimal prompt on a strong model, then add instructions and examples based on failures observed in practice.\n\n\n\nTools: the contract between the agent and the world\nA tool defines the “contract” between the agent and its space of information and actions. Good tools:\n\nReturn information that is token-efficient.\nAre self-contained and clear about their intended use.\nAvoid a bloated toolset or ambiguous decision points that leave the agent unsure which tool to pick.\n\n\n\nExamples: a picture is worth a thousand words\nDon’t stuff the prompt with a long list of edge cases. Instead, pick a few canonical, diverse examples that demonstrate the desired behavior. For an LLM, an example really is worth a thousand words."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#a-mental-model-write-select-compress-isolate",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#a-mental-model-write-select-compress-isolate",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "A mental model: Write / Select / Compress / Isolate",
+    "text": "A mental model: Write / Select / Compress / Isolate\nLangChain (Lance Martin) organizes context engineering strategies into four groups. It’s a compact framework worth remembering:\n\n\n\n\n\n\n\n\nStrategy\nMeaning\nExample techniques\n\n\n\n\nWrite\nStore context outside the context window for reuse\nScratchpad, structured notes, memory tool\n\n\nSelect\nPull the right context into the window when needed\nJust-in-time retrieval, agentic search (glob/grep)\n\n\nCompress\nKeep only the tokens that are truly needed\nCompaction, summarization, pruning processed tool results\n\n\nIsolate\nSplit context so the pieces don’t interfere\nSub-agent architectures, a separate context window per task\n\n\n\nThe four techniques in the next section all map onto this framework."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#techniques-for-long-horizon-tasks",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#techniques-for-long-horizon-tasks",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "Techniques for long-horizon tasks",
+    "text": "Techniques for long-horizon tasks\nWhen an agent runs for a long time — browsing code, doing multi-step research, handling multi-stage workflows — context accumulates fast enough to hit the window ceiling. This is where dedicated techniques are needed.\n\n1. Just-in-time retrieval (Select)\nInstead of preloading all the data into context up front, the agent keeps only lightweight identifiers (file paths, saved queries, web links…) and loads context at runtime when it’s actually needed.\nThis mirrors how people work: we don’t memorize an entire library — we use external systems for organization and indexing. The metadata itself (folder structure, naming conventions, timestamps) is already a signal that lets the agent explore information in layers — known as progressive disclosure.\n\n\n\n\n\n\nTipAgentic search, not just embeddings\n\n\n\nGiving the agent tools to explore its environment on its own (glob, grep, reading files on demand) avoids the problems of a static index: stale indexes, outdated embeddings. The trade-off is speed — which is why many strong agents use a hybrid approach: preload some data for speed while retaining the ability to explore on their own.\n\n\n\n\n2. Compaction (Compress)\nCompaction = when the conversation gets close to the context window ceiling, summarize its contents and reinitialize a fresh context window with only that summary.\nThe art lies in choosing what to keep and what to drop:\n\nStart by maximizing recall — make sure the summarization prompt captures every relevant piece of information.\nThen iterate to increase precision — strip out the redundant parts.\n\nA safe move: once work is done, delete the raw tool calls and results, keeping only the core conclusions.\n\n\n3. Structured note-taking (Write)\nHave the agent write notes outside the context window on a regular basis, then retrieve them when needed. This is durable memory at very low cost: the agent tracks progress across complex tasks and retains important dependencies and context without bloating the window.\nAnthropic released a file-based memory tool that lets an agent build up a knowledge base over time, maintain project state across multiple sessions, and reference prior work.\n\n\n4. Sub-agent architectures (Isolate)\nDelegate focused tasks to specialized sub-agents, each working in its own clean context window and returning only a condensed summary (often just 1,000–2,000 tokens).\nThe benefit is separation of concerns: all the detailed, messy search context is isolated inside the sub-agent, while the coordinating lead agent only synthesizes the distilled results.\n\n\n\n\n\n\n\n\nG\n\n\n\nlead\n\nLead Agent\n(synthesis)\n\n\n\ns1\n\nSub-agent: Search\n\n\n\nlead-&gt;s1\n\n\ntask\n\n\n\ns2\n\nSub-agent: Analysis\n\n\n\nlead-&gt;s2\n\n\ntask\n\n\n\ns3\n\nSub-agent: Verification\n\n\n\nlead-&gt;s3\n\n\ntask\n\n\n\ns1-&gt;lead\n\n\nsummary ~1-2k tokens\n\n\n\ns2-&gt;lead\n\n\nsummary\n\n\n\ns3-&gt;lead\n\n\nsummary\n\n\n\n\n\n\nFigure 1: A lead agent orchestrating sub-agents with separate context windows."
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#a-practical-checklist",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#a-practical-checklist",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "A practical checklist",
+    "text": "A practical checklist\nWhen your agent “behaves strangely,” check the context before blaming the model:\n\nIs the system prompt at the right altitude, or is it too rigid / too vague?\nAre there any redundant, overlapping tools or ones that create ambiguous choices?\nAre you stuffing in too many edge cases instead of a few canonical examples?\nDoes the context contain old history, wrong documents, or tool results that are no longer useful?\nFor long tasks: do you have a compaction / note-taking / sub-agent mechanism in place?\nAre you preloading unnecessary data instead of doing it just-in-time?"
+  },
+  {
+    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#closing",
+    "href": "posts/context-engineering-for-ai-agents/index-en.html#closing",
+    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
+    "section": "Closing",
+    "text": "Closing\nThe long-term trend is fairly clear: as models get stronger, agent design shifts toward letting smart models act smartly on their own, with ever less manual human intervention. But no matter how capable models become, context remains a finite resource, and distilling it deliberately will stay a core skill for building reliable agents.\nThe mindset to remember, in one sentence: find the smallest, highest-signal set of tokens for each step the agent takes.\n\nReferences:\n\nAnthropic — Effective context engineering for AI agents\nLangChain — Context Engineering for Agents (the Write / Select / Compress / Isolate framework)"
+  },
+  {
+    "objectID": "life.html",
+    "href": "life.html",
+    "title": "Life",
+    "section": "",
+    "text": "🌐 Tiếng Việt · English"
+  },
+  {
+    "objectID": "life.html#coming-soon",
+    "href": "life.html#coming-soon",
+    "title": "Life",
+    "section": "Coming soon",
+    "text": "Coming soon\nNotes, photos, and reflections on life beyond work — on the way."
+  },
+  {
+    "objectID": "books.html",
+    "href": "books.html",
+    "title": "Books",
+    "section": "",
+    "text": "🌐 Tiếng Việt · English"
+  },
+  {
+    "objectID": "books.html#coming-soon",
+    "href": "books.html#coming-soon",
+    "title": "Books",
+    "section": "Coming soon",
+    "text": "Coming soon\nWhat I’m reading and what stuck with me — coming soon."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "About",
+    "section": "",
+    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models. In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections.\n \n  \n   \n  \n    \n     CV\n  \n  \n    \n     GitHub\n  \n  \n    \n     LinkedIn\n  \n  \n    \n     Email"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Posts",
+    "section": "",
+    "text": "🌐 Tiếng Việt · English\n\n\n\n\n\n\n\n\n\n\nContext Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’\n\n\n\nai-agents\n\nllm\n\ncontext-engineering\n\n\n\nWhy context — not just the prompt — is what determines an AI agent’s reliability, and the practical techniques for managing it well.\n\n\n\n\n\nJun 28, 2026\n\n\nHieu Duong\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "posts/context-engineering-for-ai-agents/index.html",
     "href": "posts/context-engineering-for-ai-agents/index.html",
     "title": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình",
     "section": "",
-    "text": "🌐 Tiếng Việt · English\nNếu bạn từng xây một AI agent và thấy nó hoạt động tốt trong demo nhưng “đãng trí”, lạc đề hoặc kém tin cậy khi chạy thật trong thời gian dài, thì rất có thể vấn đề không nằm ở prompt của bạn. Nó nằm ở mọi thứ khác mà mô hình đọc được: lịch sử hội thoại, kết quả từ tool, tài liệu được nạp vào, ghi chú cũ… Quản lý tốt tập hợp ấy chính là context engineering.\nBài viết này tổng hợp lại tư duy và các kỹ thuật thực hành quanh chủ đề này — chủ yếu dựa trên bài viết Effective context engineering for AI agents của Anthropic, kết hợp với khung phân loại quen thuộc của LangChain."
+    "text": "“Context engineering đã trở thành công việc số 1 của kỹ sư xây dựng AI agent.” — quan sát của đội ngũ Cognition, giữa năm 2025.\nNếu bạn từng xây một AI agent và thấy nó hoạt động tốt trong demo nhưng “đãng trí”, lạc đề hoặc kém tin cậy khi chạy thật trong thời gian dài, thì rất có thể vấn đề không nằm ở prompt của bạn. Nó nằm ở mọi thứ khác mà mô hình đọc được: lịch sử hội thoại, kết quả từ tool, tài liệu được nạp vào, ghi chú cũ… Quản lý tốt tập hợp ấy chính là context engineering.\nBài viết này tổng hợp lại tư duy và các kỹ thuật thực hành quanh chủ đề này — chủ yếu dựa trên bài viết Effective context engineering for AI agents của Anthropic, kết hợp với khung phân loại quen thuộc của LangChain."
   },
   {
     "objectID": "posts/context-engineering-for-ai-agents/index.html#từ-prompt-engineering-đến-context-engineering",
@@ -56,73 +175,17 @@
     "text": "Kết\nXu hướng dài hạn khá rõ: khi mô hình ngày càng mạnh, thiết kế agent dịch chuyển theo hướng để mô hình thông minh tự hành xử thông minh, với ngày càng ít sự can thiệp thủ công của con người. Nhưng dù năng lực mô hình có tăng đến đâu, context vẫn là một tài nguyên hữu hạn, và việc chắt lọc nó một cách có chủ đích vẫn sẽ là kỹ năng cốt lõi để xây dựng những agent đáng tin cậy.\nTư duy cần nhớ gọn trong một câu: tìm tập token nhỏ nhất, tín hiệu cao nhất, cho từng bước agent hành động.\n\nNguồn tham khảo:\n\nAnthropic — Effective context engineering for AI agents\nLangChain — Context Engineering for Agents (khung Write / Select / Compress / Isolate)"
   },
   {
-    "objectID": "posts.html",
-    "href": "posts.html",
-    "title": "Posts",
+    "objectID": "vi_life.html",
+    "href": "vi_life.html",
+    "title": "Cuộc sống",
     "section": "",
-    "text": "Context Engineering cho AI Agents: Nghệ thuật quản lý ‘trí nhớ’ của mô hình\n\n\n\nai-agents\n\nllm\n\ncontext-engineering\n\ntiếng-việt\n\n\n\nVì sao context — chứ không chỉ prompt — mới là yếu tố quyết định độ tin cậy của một AI agent, và những kỹ thuật thực hành để quản lý nó hiệu quả.\n\n\n\n\n\nJun 28, 2026\n\n\nHieu Duong\n\n\n\n\n\nNo matching items"
+    "text": "🌐 Tiếng Việt · English"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "About",
-    "section": "",
-    "text": "Hello ! My name is Hieu Duong (Dương Xuân Hiếu in Vietnamese). I’m an AI Engineer at FPT Smart Cloud. My current work focuses on research and development of Large Language Models (LLMs) and AI Agents for real-world applications, such as chatbot systems and recommendation systems. I also conduct research in various fields related to Natural Language Processing (NLP), with a particular focus on Vietnamese (my mother tongue) and English. My research interests include Information Retrieval and Retrieval-Augmented Language Models. In addition to my professional work, I enjoy reading and writing blogs about life experiences and personal reflections.\n \n  \n   \n  \n    \n     CV\n  \n  \n    \n     GitHub\n  \n  \n    \n     LinkedIn\n  \n  \n    \n     Email"
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "",
-    "text": "🌐 Tiếng Việt · English\nIf you’ve ever built an AI agent that worked great in a demo but became “forgetful,” went off track, or grew unreliable over a long real-world run, the problem is probably not in your prompt. It’s in everything else the model reads: conversation history, tool results, loaded documents, old notes… Managing that whole set well is what we call context engineering.\nThis post pulls together the mindset and the practical techniques around the topic — mostly based on Anthropic’s Effective context engineering for AI agents, combined with LangChain’s familiar taxonomy."
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#from-prompt-engineering-to-context-engineering",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#from-prompt-engineering-to-context-engineering",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "From prompt engineering to context engineering",
-    "text": "From prompt engineering to context engineering\nPrompt engineering is writing and arranging instructions for the model — optimizing for a discrete, single-shot task.\nContext engineering is its natural evolution: instead of only worrying about the prompt, you manage the entire set of tokens fed to the model at each inference step, and you do it repeatedly across the agent’s lifecycle.\n\n\n\n\n\n\nNoteA short definition\n\n\n\nContext is the set of tokens included when sampling from an LLM. Context engineering is the problem of optimizing the usefulness of that token set against the LLM’s inherent constraints, in order to reliably achieve the desired outcome.\n\n\nThe core difference: a prompt is something static you write once; context is dynamic — it grows and shifts with every turn the agent takes. For a chatbot answering one question, prompt engineering is enough. For an agent running dozens or hundreds of tool calls, you’re forced to orchestrate context."
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#context-is-a-finite-resource",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#context-is-a-finite-resource",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "Context is a finite resource",
-    "text": "Context is a finite resource\nThe most common wrong intuition: “the bigger the context window, the better — just stuff everything in.” The reality is the opposite.\n\nContext rot\nResearch points to a phenomenon called context rot: as the context window gets longer, the model’s accuracy at recalling information degrades. The model can still “read” everything, but its precision in retrieving a specific detail drops.\n\n\nThe attention budget\nJust as humans have a limited working memory, an LLM has a finite “attention budget” that is depleted with every new token. The cause lies in the transformer architecture: each token must “attend” to every other token, creating n² pairwise relationships for n tokens. The longer the context, the more thinly that attention is spread.\n\n\n\n\n\n\nImportantThe principle running through all of this\n\n\n\nThe goal of context engineering is to find the smallest set of high-signal-density tokens that maximizes the likelihood of the desired outcome. Context is a precious and finite resource — spend it frugally."
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#the-anatomy-of-good-context",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#the-anatomy-of-good-context",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "The anatomy of good context",
-    "text": "The anatomy of good context\nA well-constructed context usually consists of deliberately ordered components: system prompt → relevant memory/notes → tool definitions → examples → conversation history. Their quality and ordering drive performance more than any single other factor.\n\nSystem prompt: finding the right “altitude”\nSystem prompts tend to fall into two extremes:\n\nToo rigid: hardcoding complex, brittle logic that breaks on novel situations.\nToo vague: giving only generic guidance, assuming the model understands context it actually lacks.\n\nThe Goldilocks zone sits at the right altitude: specific enough to steer behavior, yet flexible enough to let the model reason with strong heuristics.\nPractical tips:\n\nSplit the prompt into clear sections using XML tags or Markdown headings.\nAim for the minimal set of information that fully describes the expected behavior.\nStart with a minimal prompt on a strong model, then add instructions and examples based on failures observed in practice.\n\n\n\nTools: the contract between the agent and the world\nA tool defines the “contract” between the agent and its space of information and actions. Good tools:\n\nReturn information that is token-efficient.\nAre self-contained and clear about their intended use.\nAvoid a bloated toolset or ambiguous decision points that leave the agent unsure which tool to pick.\n\n\n\nExamples: a picture is worth a thousand words\nDon’t stuff the prompt with a long list of edge cases. Instead, pick a few canonical, diverse examples that demonstrate the desired behavior. For an LLM, an example really is worth a thousand words."
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#a-mental-model-write-select-compress-isolate",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#a-mental-model-write-select-compress-isolate",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "A mental model: Write / Select / Compress / Isolate",
-    "text": "A mental model: Write / Select / Compress / Isolate\nLangChain (Lance Martin) organizes context engineering strategies into four groups. It’s a compact framework worth remembering:\n\n\n\n\n\n\n\n\nStrategy\nMeaning\nExample techniques\n\n\n\n\nWrite\nStore context outside the context window for reuse\nScratchpad, structured notes, memory tool\n\n\nSelect\nPull the right context into the window when needed\nJust-in-time retrieval, agentic search (glob/grep)\n\n\nCompress\nKeep only the tokens that are truly needed\nCompaction, summarization, pruning processed tool results\n\n\nIsolate\nSplit context so the pieces don’t interfere\nSub-agent architectures, a separate context window per task\n\n\n\nThe four techniques in the next section all map onto this framework."
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#techniques-for-long-horizon-tasks",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#techniques-for-long-horizon-tasks",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "Techniques for long-horizon tasks",
-    "text": "Techniques for long-horizon tasks\nWhen an agent runs for a long time — browsing code, doing multi-step research, handling multi-stage workflows — context accumulates fast enough to hit the window ceiling. This is where dedicated techniques are needed.\n\n1. Just-in-time retrieval (Select)\nInstead of preloading all the data into context up front, the agent keeps only lightweight identifiers (file paths, saved queries, web links…) and loads context at runtime when it’s actually needed.\nThis mirrors how people work: we don’t memorize an entire library — we use external systems for organization and indexing. The metadata itself (folder structure, naming conventions, timestamps) is already a signal that lets the agent explore information in layers — known as progressive disclosure.\n\n\n\n\n\n\nTipAgentic search, not just embeddings\n\n\n\nGiving the agent tools to explore its environment on its own (glob, grep, reading files on demand) avoids the problems of a static index: stale indexes, outdated embeddings. The trade-off is speed — which is why many strong agents use a hybrid approach: preload some data for speed while retaining the ability to explore on their own.\n\n\n\n\n2. Compaction (Compress)\nCompaction = when the conversation gets close to the context window ceiling, summarize its contents and reinitialize a fresh context window with only that summary.\nThe art lies in choosing what to keep and what to drop:\n\nStart by maximizing recall — make sure the summarization prompt captures every relevant piece of information.\nThen iterate to increase precision — strip out the redundant parts.\n\nA safe move: once work is done, delete the raw tool calls and results, keeping only the core conclusions.\n\n\n3. Structured note-taking (Write)\nHave the agent write notes outside the context window on a regular basis, then retrieve them when needed. This is durable memory at very low cost: the agent tracks progress across complex tasks and retains important dependencies and context without bloating the window.\nAnthropic released a file-based memory tool that lets an agent build up a knowledge base over time, maintain project state across multiple sessions, and reference prior work.\n\n\n4. Sub-agent architectures (Isolate)\nDelegate focused tasks to specialized sub-agents, each working in its own clean context window and returning only a condensed summary (often just 1,000–2,000 tokens).\nThe benefit is separation of concerns: all the detailed, messy search context is isolated inside the sub-agent, while the coordinating lead agent only synthesizes the distilled results.\n\n\n\n\n\n\n\n\nG\n\n\n\nlead\n\nLead Agent\n(synthesis)\n\n\n\ns1\n\nSub-agent: Search\n\n\n\nlead-&gt;s1\n\n\ntask\n\n\n\ns2\n\nSub-agent: Analysis\n\n\n\nlead-&gt;s2\n\n\ntask\n\n\n\ns3\n\nSub-agent: Verification\n\n\n\nlead-&gt;s3\n\n\ntask\n\n\n\ns1-&gt;lead\n\n\nsummary ~1-2k tokens\n\n\n\ns2-&gt;lead\n\n\nsummary\n\n\n\ns3-&gt;lead\n\n\nsummary\n\n\n\n\n\n\nFigure 1: A lead agent orchestrating sub-agents with separate context windows."
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#a-practical-checklist",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#a-practical-checklist",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "A practical checklist",
-    "text": "A practical checklist\nWhen your agent “behaves strangely,” check the context before blaming the model:\n\nIs the system prompt at the right altitude, or is it too rigid / too vague?\nAre there any redundant, overlapping tools or ones that create ambiguous choices?\nAre you stuffing in too many edge cases instead of a few canonical examples?\nDoes the context contain old history, wrong documents, or tool results that are no longer useful?\nFor long tasks: do you have a compaction / note-taking / sub-agent mechanism in place?\nAre you preloading unnecessary data instead of doing it just-in-time?"
-  },
-  {
-    "objectID": "posts/context-engineering-for-ai-agents/index-en.html#closing",
-    "href": "posts/context-engineering-for-ai-agents/index-en.html#closing",
-    "title": "Context Engineering for AI Agents: The Art of Managing a Model’s ‘Memory’",
-    "section": "Closing",
-    "text": "Closing\nThe long-term trend is fairly clear: as models get stronger, agent design shifts toward letting smart models act smartly on their own, with ever less manual human intervention. But no matter how capable models become, context remains a finite resource, and distilling it deliberately will stay a core skill for building reliable agents.\nThe mindset to remember, in one sentence: find the smallest, highest-signal set of tokens for each step the agent takes.\n\nReferences:\n\nAnthropic — Effective context engineering for AI agents\nLangChain — Context Engineering for Agents (the Write / Select / Compress / Isolate framework)"
+    "objectID": "vi_life.html#sắp-ra-mắt",
+    "href": "vi_life.html#sắp-ra-mắt",
+    "title": "Cuộc sống",
+    "section": "Sắp ra mắt",
+    "text": "Sắp ra mắt\nNhững ghi chép, hình ảnh và suy ngẫm về cuộc sống ngoài công việc — sẽ sớm cập nhật."
   }
 ]

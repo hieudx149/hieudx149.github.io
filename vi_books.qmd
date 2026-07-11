@@ -1,0 +1,13 @@
+---
+title: "Sách"
+---
+
+::: {.lang-switch}
+🌐 **Tiếng Việt** · [English](books.html)
+:::
+
+::: {.coming-soon}
+## Sắp ra mắt
+
+Những cuốn tôi đang đọc và những điều đọng lại — sẽ sớm cập nhật.
+:::

@@ -1,6 +1,100 @@
 /* css styles */
 
-/* Language switcher at the top of bilingual posts */
+/* Brand wordmark "Hieu Duong": default theme font, slightly bold + larger, black. */
+.navbar-brand {
+  font-weight: 600;
+  font-size: 1.35rem;
+  color: #16181d;
+}
+
+/* Coming-soon placeholder pages (Life, Books) */
+.coming-soon {
+  margin: 3rem 0 4rem;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  background: #f8f9fa;
+}
+
+.coming-soon h2 {
+  margin-top: 0;
+  font-weight: 700;
+  color: #16181d;
+}
+
+.coming-soon p {
+  margin-bottom: 0;
+  color: #6c757d;
+}
+
+/* Single knob: navbar and Quarto's body column stay the same width.
+   Quarto's body-content column is `minmax(500px, calc(800px - 3em))`, i.e.
+   749px at the 17px body font — NOT 800px. Matching 800 made the navbar
+   overhang the text column by ~25px each side, so the brand sat left of the
+   post text. The column is always centred in the viewport, so a centred
+   container of this width lines its edges up with the body text. */
+:root {
+  --site-body-width: 749px;
+}
+
+/* Navbar spans the body column instead of the full viewport */
+.navbar-container.container-fluid {
+  max-width: var(--site-body-width);
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+/* Listing categories live in the right margin by default; move them to the
+   left column Quarto uses for the TOC, so both pages share one layout.
+   Only above Quarto's lg breakpoint: below it the page-start/body-start
+   gutter is ~25px wide and the categories would overlap the body. */
+@media (min-width: 992px) {
+  #quarto-margin-sidebar:has(.quarto-listing-category) {
+    grid-column: page-start/body-start;
+    padding-right: 1em;
+  }
+}
+
+/* Quarto reserves this 2em gutter for the categories sidebar it normally puts
+   to the right of the listing. With the sidebar moved left it is dead space,
+   and it makes the listing 2em narrower than the page title above it. */
+.quarto-listing.quarto-listing-container-default {
+  margin-right: 0;
+}
+
+/* Post listing: stack each entry vertically, date/author above the title.
+   The .image-* selectors must be matched: Quarto tags every entry
+   .image-right (flex-direction: row-reverse) and outranks a bare
+   div.quarto-post. */
+div.quarto-post,
+div.quarto-post.image-left,
+div.quarto-post.image-right {
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+div.quarto-post .metadata {
+  order: 1;
+  flex: 0 0 auto;
+}
+
+/* Quarto wraps the date and author in a single <a>, so the row has to be
+   established on the anchor, not on .metadata. */
+div.quarto-post .metadata,
+div.quarto-post .metadata > a {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75em;
+}
+
+div.quarto-post .body {
+  order: 2;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* Language switcher at the top of Posts / Life / Books pages */
 .lang-switch {
   margin-bottom: 1.5rem;
 }
@@ -16,24 +110,25 @@
   margin: 0;
 }
 
-/* Clickable language (the other language) renders as a link */
+/* The other language renders as a link */
 .lang-switch a {
   text-decoration: none;
   padding: 0.1rem 0.6rem;
   border-radius: 999px;
-  color: #2780e3;
+  color: #495057;
 }
 
 .lang-switch a:hover {
-  background-color: #e7f1ff;
+  background-color: #f1f3f5;
   text-decoration: none;
 }
 
-/* Current language renders as bold + highlighted pill */
+/* Current language renders as a filled dark pill */
 .lang-switch strong {
   padding: 0.1rem 0.6rem;
   border-radius: 999px;
-  background-color: #2780e3;
+  background-color: #16181d;
   color: #fff;
   font-weight: 600;
 }
+
